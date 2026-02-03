@@ -1,7 +1,7 @@
 {
   "name": "web-vault",
   "version": "0.0.1",
-  "description": "crypto functions for e2e encrypted web-vaults, easy to use, written in typescript.",
+  "description": "library for e2e encrypted web vaults, using native web crypto api, written in typescript, easy to use.",
   "private": true,
   "type": "module",
   "main": "dist/lib/index.js",
