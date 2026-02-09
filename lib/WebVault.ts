@@ -26,7 +26,7 @@ interface WebVault {
 
   /**
    * wraps/encrypts keys
-   * @param keys - keys to wrap/encrypt
+   * @param keys - keys to wrap/encrypt (length (in bytes) for each key must be multiple of 8)
    * @param kek - key used to encrypt the keys
    * @param encode - boolean, if wrapped keys should be base64-encoded
    * @returns Promise with wrappedKeys, as base64-encoded string if `encode` is true, as Uint8Array if not

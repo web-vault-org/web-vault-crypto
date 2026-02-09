@@ -97,7 +97,8 @@ const wrappedAsUintArray = await wrapKeys({ keys: [key1, key2], kek: keyToEncryp
 ### Parameters
 
 #### keys
-An array of `Uint8Array`s providing the keys you want to wrap/encrypt.
+An array of `Uint8Array`s providing the keys you want to wrap/encrypt. \
+Length (in bytes) for each key must be multiple of 8.
 
 #### kek
 A `Uint8Array` providing key-encryption-key
