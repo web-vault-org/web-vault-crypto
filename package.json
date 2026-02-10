@@ -50,6 +50,7 @@
   "author": "Johanna Herrmann",
   "license": "MIT",
   "dependencies": {
+    "argon2": "^0.44.0",
     "argon2-browser": "^1.18.0"
   }
 }
