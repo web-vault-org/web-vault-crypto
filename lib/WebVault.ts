@@ -88,7 +88,7 @@ interface WebVault {
    * @param exclude - array with names of properties to exclude
    * @returns Promise with signature as base64-encoded string
    */
-  sign: ({ data, key, exclude }: { data: object; key: Uint8Array; exclude?: string[] }) => Promise<string>;
+  sign: ({ data, key, exclude }: { data: Record<string, unknown>; key: Uint8Array; exclude?: string[] }) => Promise<string>;
 
   /**
    * verifies an object
@@ -98,7 +98,17 @@ interface WebVault {
    * @param exclude - array with names of properties to exclude
    * @returns Promise with boolean, stating if object is authentic and integer
    */
-  verify: ({ data, key, signature, exclude }: { data: object; key: Uint8Array; signature: string; exclude?: string[] }) => Promise<boolean>;
+  verify: ({
+    data,
+    key,
+    signature,
+    exclude
+  }: {
+    data: Record<string, unknown>;
+    key: Uint8Array;
+    signature: string;
+    exclude?: string[];
+  }) => Promise<boolean>;
 }
 
 export { WebVault };
