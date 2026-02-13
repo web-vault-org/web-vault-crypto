@@ -1,11 +1,11 @@
-# web-vault
+# web-vault-crypto
 
-[![npm package](https://nodei.co/npm/web-vault.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/web-vault/)
+[![npm package](https://nodei.co/npm/web-vault-crypto.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/web-vault/)
 
 
-[![npm](https://img.shields.io/npm/v/web-vault)](https://www.npmjs.com/package/web-vault) [![QA](https://github.com/web-vault-org/web-vault/actions/workflows/qa.yml/badge.svg?branch=main)](https://github.com/web-vault-org/web-vault/actions/workflows/qa.yml)
+[![npm](https://img.shields.io/npm/v/web-vault-crypto)](https://www.npmjs.com/package/web-vault-crypto) [![QA](https://github.com/web-vault-org/web-vault-crypto/actions/workflows/qa.yml/badge.svg?branch=main)](https://github.com/web-vault-org/web-vault-crypto/actions/workflows/qa.yml)
 
-Library for e2e encrypted web vaults,
+Crypto-Library for e2e encrypted web vaults,
 using [native web crypto api](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
 and [argon2-browser](https://www.npmjs.com/package/argon2-browser),
 written in typescript, easy to use.
@@ -32,40 +32,40 @@ Used crypto-libraries:
 
 Install:
 ```bash
-npm install web-vault
+npm install web-vault-crypto
 ```
 
 Import:
 ```js
 
 // Replace createKey with a comma-separated list of the functions, you need
-import { createKey } from 'web-vault';
+import { createKey } from 'web-vault-crypto';
 const key = await createKey({ sizeInBytes: 32 });
 
 // or import all functions
-import webVault from 'web-vault';
-const key = await webVault.createKey({ sizeInBytes: 32 });
+import webVaultCrypto from 'web-vault-crypto';
+const key = await webVaultCrypto.createKey({ sizeInBytes: 32 });
 ```
 
 ### Browser
 
 ```html
 <!-- Load the file from jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/web-vault@latest/dist/web-vault.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web-vault-crypto@latest/dist/web-vault-crypto.js"></script>
 
 <!-- or load the file from unpkg -->
-<script src="https://unpkg.com/web-vault@latest/dist/web-vault.js"></script>
+<script src="https://unpkg.com/web-vault-crypto@latest/dist/web-vault-crypto.js"></script>
 
 <!-- or download the file and host it yourself -->
-<script src="/js/web-vault.js"></script>
+<script src="/js/web-vault-crypto.js"></script>
 
 <script>
 // Replace createKey with a comma-separated list of the functions, you need
-const { createKey } = webVault;
+const { createKey } = webVaultCrypto;
 const key = await createKey({ sizeInBytes: 32 });
 
 // or use functions directly
-const key = await webVault.createKey({ sizeInBytes: 32 });
+const key = await webVaultCrypto.createKey({ sizeInBytes: 32 });
 </script>
 ```
 

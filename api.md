@@ -7,7 +7,7 @@ To create a random key, use the function `createKey`, providing the key length i
 
 ### Syntax
 ```js
-import { createKey } from 'web-vault';
+import { createKey } from 'web-vault-crypto';
 const key = await createKey({ sizeInBytes: 32 });
 ```
 
@@ -24,7 +24,7 @@ To derive a key from a password, use the function `derivePasswordKey`, providing
 
 ### Syntax
 ```js
-import { derivePasswordKey } from 'web-vault';
+import { derivePasswordKey } from 'web-vault-crypto';
 
 // using given salt
 const [_, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, salt: yourGivenSalt });
@@ -54,7 +54,7 @@ To hash a password, use the function `hashPassword`, providing the password, the
 
 ### Syntax
 ```js
-import { hashPassword } from 'web-vault';
+import { hashPassword } from 'web-vault-crypto';
 
 // using given salt
 const [_, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, salt: yourGivenSalt });
@@ -85,7 +85,7 @@ the wrapping-key and optionally an encode-toggle
 
 ### Syntax
 ```js
-import { wrapKeys } from 'web-vault';
+import { wrapKeys } from 'web-vault-crypto';
 
 // with base64Encoding
 const wrappedAndbase64Encoded = await wrapKeys({ keys: [key1, key2], kek: keyToEncryptKeys, encode: true });
@@ -121,7 +121,7 @@ and the wrapping-key and optionally the key lengths
 
 ### Syntax
 ```js
-import { unwrapKeys } from 'web-vault';
+import { unwrapKeys } from 'web-vault-crypto';
 
 const unwrapped = await unwrapKeys({ wrappedKey: wrapped, kek: keyToEncryptKeys, lengths: [64] });
 ```
@@ -157,7 +157,7 @@ providing the plaintext, the key, optionally an encode-toggle and optionally add
 ### Syntax
 
 ```js
-import { encrypt } from 'web-vault';
+import { encrypt } from 'web-vault-crypto';
 
 // string to base64-encoded-string
 const encryptedString = await encrypt({ content: 'top secret!', key: encryptionKey, encode: true });
@@ -204,7 +204,7 @@ providing the ciphertext, optionally an asString-toggle and optionally additiona
 ### Syntax
 
 ```js
-import { decrypt } from 'web-vault';
+import { decrypt } from 'web-vault-crypto';
 
 // string to base64-encoded-string
 const decryptedString = await decrypt({ content: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', key: encryptionKey, asString: true });
@@ -251,7 +251,7 @@ providing the object, the hashing key and optionally en exclude-list.
 ### Syntax
 
 ```js
-import { sign } from 'web-vault';
+import { sign } from 'web-vault-crypto';
 
 // whole object
 const data = { a: 1, b: 2, c: 'someExampleValue' };
@@ -283,7 +283,7 @@ providing the object, the hashing key, the signature and optionally an exclude-l
 ### Syntax
 
 ```js
-import { verify } from 'web-vault';
+import { verify } from 'web-vault-crypto';
 
 // whole object
 const data = { a: 1, b: 2, c: 'someExampleValue' };

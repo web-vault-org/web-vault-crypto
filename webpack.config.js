@@ -7,10 +7,10 @@ export default {
   mode: 'production',
   output: {
     path: path.resolve('./', 'dist'),
-    filename: 'web-vault.js',
+    filename: 'web-vault-crypto.js',
     globalObject: 'this',
     library: {
-      name: 'webVault',
+      name: 'webVaultCrypto',
       type: 'umd'
     }
   },
