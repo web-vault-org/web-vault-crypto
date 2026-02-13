@@ -67,4 +67,14 @@ describe('signing', () => {
 
     expect(sig1).not.toBe(sig2);
   });
+
+  describe('constraints', () => {
+    it('sign rejects if key length is less then 8.', async () => {
+      await expect(sign({ data: {}, key: new Uint8Array(7) })).rejects.toThrow('Invalid key length. Must be at least 8');
+    });
+
+    it('verify rejects if key length is less then 8.', async () => {
+      await expect(verify({ data: {}, key: new Uint8Array(7), signature: '' })).rejects.toThrow('Invalid key length. Must be at least 8');
+    });
+  });
 });

@@ -147,4 +147,14 @@ describe('encryption', () => {
 
     expect(a).not.toEqual(b);
   });
+
+  describe('constraints', () => {
+    it('encryption rejects if key length is not 16, 24 or 32.', async () => {
+      await expect(encrypt({ content: '', key: new Uint8Array(15) })).rejects.toThrow('Invalid key length. Must be 16, 24 or 32');
+    });
+
+    it('decryption rejects if key length is not 16, 24 or 32.', async () => {
+      await expect(decrypt({ content: '', key: new Uint8Array(15) })).rejects.toThrow('Invalid key length. Must be 16, 24 or 32');
+    });
+  });
 });

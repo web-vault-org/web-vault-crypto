@@ -20,13 +20,13 @@ describe('hashing', () => {
   });
 
   it('derivePasswordKey creates key from password, using given salt.', async () => {
-    const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 24, salt: 'givenSalt' });
+    const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 24, salt: 'givenSalt1234567' });
 
-    expect(salt).toEqual('givenSalt');
+    expect(salt).toEqual('givenSalt1234567');
     expect(key).toBeInstanceOf(Uint8Array);
     expect(key.length).toBe(24);
     expect(key).toEqual(
-      new Uint8Array([150, 18, 92, 142, 158, 233, 71, 53, 84, 159, 186, 179, 60, 67, 184, 35, 231, 221, 88, 206, 15, 129, 170, 218])
+      new Uint8Array([102, 13, 10, 140, 130, 0, 112, 70, 113, 217, 97, 59, 247, 118, 18, 101, 129, 249, 65, 226, 148, 181, 56, 37])
     );
   });
 
@@ -40,11 +40,33 @@ describe('hashing', () => {
   });
 
   it('hashPassword creates hash from password, using given salt.', async () => {
-    const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 24, salt: 'givenSalt' });
+    const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 24, salt: 'givenSalt1234567' });
 
-    expect(salt).toEqual('givenSalt');
+    expect(salt).toEqual('givenSalt1234567');
     expect(hash).toEqual(
-      encode(new Uint8Array([150, 18, 92, 142, 158, 233, 71, 53, 84, 159, 186, 179, 60, 67, 184, 35, 231, 221, 88, 206, 15, 129, 170, 218]))
+      encode(new Uint8Array([102, 13, 10, 140, 130, 0, 112, 70, 113, 217, 97, 59, 247, 118, 18, 101, 129, 249, 65, 226, 148, 181, 56, 37]))
     );
+  });
+
+  describe('constraints', () => {
+    it('derivePasswordKey rejects if desired key length is less then 8.', async () => {
+      await expect(derivePasswordKey({ sizeInBytes: 7, password: '' })).rejects.toThrow('Invalid key length. Must be at least 8');
+    });
+
+    it('hashPassword rejects if desired key length is less then 8.', async () => {
+      await expect(hashPassword({ sizeInBytes: 7, password: '' })).rejects.toThrow('Invalid key length. Must be at least 8');
+    });
+
+    it('derivePasswordKey rejects if salt length is less then 16.', async () => {
+      await expect(derivePasswordKey({ sizeInBytes: 12, password: '', salt: 'too-short123456' })).rejects.toThrow(
+        'Invalid salt length. Must be at least 16'
+      );
+    });
+
+    it('hashPassword rejects if salt length is less then 16.', async () => {
+      await expect(hashPassword({ sizeInBytes: 12, password: '', salt: 'too-short123456' })).rejects.toThrow(
+        'Invalid salt length. Must be at least 16'
+      );
+    });
   });
 });

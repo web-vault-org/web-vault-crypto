@@ -10,6 +10,14 @@ import { decode, encode as encodeBase64 } from '@/base64';
  * @returns Promise with wrappedKeys, as base64-encoded string if `encode` is true, as Uint8Array if not
  */
 const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
+  if (kek.length !== 16 && kek.length !== 24 && kek.length !== 32) {
+    throw new Error('Invalid kek length. Must be 16, 24 or 32');
+  }
+  const keysLength = keys.reduce((a, b) => a + b.length, 0);
+  if (keysLength <= 0 || keysLength % 8 > 0) {
+    throw new Error('Invalid keys length. Must be multiple of 8 bytes');
+  }
+
   const crypto = getCrypto();
   const key = mergeUint8Array(keys);
   const keyMaterial = await importKey(key, 'AES-KW', ['wrapKey']);
@@ -38,6 +46,10 @@ const unwrapKeys = async function ({
   kek: Uint8Array;
   lengths?: number[];
 }): Promise<Uint8Array[]> {
+  if (kek.length !== 16 && kek.length !== 24 && kek.length !== 32) {
+    throw new Error('Invalid kek length. Must be 16, 24 or 32');
+  }
+
   const crypto = getCrypto();
   const kekMaterial = await importKey(kek, 'AES-KW', ['unwrapKey']);
   const wrappedKey = typeof wrappedKeys === 'string' ? decode(wrappedKeys) : wrappedKeys;

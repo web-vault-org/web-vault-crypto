@@ -23,7 +23,16 @@ const derivePasswordKey = async function ({
   sizeInBytes: number;
   salt?: string;
 }): Promise<[string, Uint8Array]> {
+  if (sizeInBytes < 8) {
+    throw new Error('Invalid key length. Must be at least 8');
+  }
+
   salt = salt || (await createNewSalt());
+
+  if (salt.length < 16) {
+    throw new Error('Invalid salt length. Must be at least 16');
+  }
+
   const result = await getArgon2Hash()({
     salt,
     pass: password,

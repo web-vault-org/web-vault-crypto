@@ -14,4 +14,24 @@ describe('createKey', () => {
 
     expect(key1).not.toEqual(key2);
   });
+
+  it('rejects if key length is less then 8.', async () => {
+    let error: Error | null = null;
+
+    try {
+      await createKey({ sizeInBytes: 7 });
+    } catch (err: unknown) {
+      error = err as Error;
+    }
+
+    expect(error).not.toBeNull();
+    expect(error).toBeInstanceOf(Error);
+    expect(error?.message).toEqual('Invalid length. Must be at least 8');
+  });
+
+  describe('constraints', () => {
+    it('rejects if key length is less then 8 - test.', async () => {
+      await expect(createKey({ sizeInBytes: 7 })).rejects.toThrow('Invalid length. Must be at least 8');
+    });
+  });
 });

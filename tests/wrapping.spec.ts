@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import { wrapKeys, unwrapKeys } from '@/wrapping';
 
-// Helper für zufällige Bytes
 function randomBytes(length: number): Uint8Array {
   const arr = new Uint8Array(length);
   crypto.getRandomValues(arr);
@@ -13,27 +12,23 @@ describe('wrapping', () => {
   let keys: Uint8Array[];
 
   beforeEach(() => {
-    // Key Encryption Key (KEK) 256 Bit
     kek = randomBytes(32);
-
-    // Beispiel Keys zum Wrappen
-    keys = [randomBytes(16), randomBytes(16)]; // zwei Keys à 16 Bytes
+    keys = [randomBytes(16), randomBytes(16)];
   });
 
-  test('wrapKey gibt Uint8Array zurück', async () => {
+  it('wrapKey returns Uint8Array', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     expect(wrapped).toBeInstanceOf(Uint8Array);
     expect(wrapped.length).toBeGreaterThan(0);
   });
 
-  test('wrapKey mit Base64-Encoding', async () => {
+  it('wrapKey with Base64-Encoding.', async () => {
     const wrappedBase64 = await wrapKeys({ keys, kek, encode: true });
     expect(typeof wrappedBase64).toBe('string');
-    // Optional: Prüfen, ob Base64-String gültig ist
     expect(wrappedBase64).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
   });
 
-  test('unwrapKey liefert die originalen Keys zurück', async () => {
+  it('unwrapKey returns original keys.', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: keys.map((k) => k.length) });
 
@@ -43,11 +38,10 @@ describe('wrapping', () => {
     });
   });
 
-  test('unwrapKey ohne length splitten gibt ein Array mit gesamtem Key zurück', async () => {
+  it('unwrapKey without length returns one-value-array with full length.', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek });
 
-    // Da keine length übergeben, sollte ein einzelnes Array zurückkommen
     expect(unwrapped.length).toBe(1);
     const mergedOriginal = keys.reduce((acc, k) => {
       const tmp = new Uint8Array(acc.length + k.length);
@@ -58,17 +52,17 @@ describe('wrapping', () => {
     expect(unwrapped[0]).toEqual(mergedOriginal);
   });
 
-  test('unwrapKey mit unvollständigen length-Array behandelt Rest korrekt', async () => {
+  it('unwrapKey with partially filled length-Array handles remaining correctly', async () => {
     const wrapped = await wrapKeys({ keys, kek });
-    const partialLength = [16]; // nur erste 16 Bytes splitten
+    const partialLength = [16];
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: partialLength });
 
-    expect(unwrapped.length).toBe(2); // erste 16, rest
+    expect(unwrapped.length).toBe(2);
     expect(unwrapped[0]).toEqual(keys[0]);
     expect(unwrapped[1]).toEqual(keys[1]);
   });
 
-  test('wrap + unwrap ist symmetrisch', async () => {
+  it('wrap + unwrap is symmetric', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: keys.map((k) => k.length) });
 
@@ -87,5 +81,25 @@ describe('wrapping', () => {
     }, new Uint8Array());
 
     expect(mergedUnwrapped).toEqual(mergedOriginal);
+  });
+
+  describe('constraints', () => {
+    it('wrapKeys rejects if keys length is not multiple of 8.', async () => {
+      await expect(wrapKeys({ keys: [new Uint8Array(8), new Uint8Array(9)], kek: new Uint8Array(32) })).rejects.toThrow(
+        'Invalid keys length. Must be multiple of 8 bytes'
+      );
+    });
+
+    it('wrapKeys rejects if kek length is not 16, 24 or 32.', async () => {
+      await expect(wrapKeys({ keys: [new Uint8Array(8), new Uint8Array(8)], kek: new Uint8Array(31) })).rejects.toThrow(
+        'Invalid kek length. Must be 16, 24 or 32'
+      );
+    });
+
+    it('unwrapKeys rejects if kek length is not 16, 24 or 32.', async () => {
+      await expect(unwrapKeys({ wrappedKeys: new Uint8Array(), kek: new Uint8Array(31) })).rejects.toThrow(
+        'Invalid kek length. Must be 16, 24 or 32'
+      );
+    });
   });
 });
