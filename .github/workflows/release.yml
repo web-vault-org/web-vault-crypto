@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Ensure tag points to main
         run: |
           git fetch origin main
@@ -19,9 +22,6 @@ jobs:
             echo "Tag is not on main branch, skipping release."
             exit 1
           fi
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
