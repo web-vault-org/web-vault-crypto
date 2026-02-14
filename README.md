@@ -1,6 +1,6 @@
 # web-vault-crypto
 
-[![npm package](https://nodei.co/npm/web-vault-crypto.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/web-vault/)
+[![npm package](https://nodei.co/npm/web-vault-crypto.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/web-vault-crypto/)
 
 
 [![npm](https://img.shields.io/npm/v/web-vault-crypto)](https://www.npmjs.com/package/web-vault-crypto) \
