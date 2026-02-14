@@ -4,10 +4,11 @@
   "description": "Crypto-Library for e2e encrypted web vaults, using native web crypto api, written in typescript, easy to use.",
   "private": false,
   "type": "module",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "built/index.js",
+  "types": "built/index.d.ts",
   "files": [
-    "built"
+    "built",
+    "dist"
   ],
   "scripts": {
     "lint": "eslint .",
