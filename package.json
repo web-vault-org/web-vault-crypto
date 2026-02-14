@@ -1,6 +1,6 @@
 {
   "name": "web-vault-crypto",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Crypto-Library for e2e encrypted web vaults, using native web crypto api, written in typescript, easy to use.",
   "private": false,
   "type": "module",
@@ -45,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johanna-herrmann/web-vault-org/web-vault-crypto.git"
+    "url": "git+https://github.com/web-vault-org/web-vault-crypto.git"
   },
   "keywords": [
     "encryption",
