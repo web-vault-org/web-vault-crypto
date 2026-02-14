@@ -3,7 +3,8 @@
 [![npm package](https://nodei.co/npm/web-vault-crypto.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/web-vault/)
 
 
-[![npm](https://img.shields.io/npm/v/web-vault-crypto)](https://www.npmjs.com/package/web-vault-crypto) [![QA](https://github.com/web-vault-org/web-vault-crypto/actions/workflows/qa.yml/badge.svg?branch=main)](https://github.com/web-vault-org/web-vault-crypto/actions/workflows/qa.yml)
+[![npm](https://img.shields.io/npm/v/web-vault-crypto)](https://www.npmjs.com/package/web-vault-crypto) \
+[![QA-Main](https://github.com/web-vault-org/web-vault-crypto/actions/workflows/qa_main.yml/badge.svg?branch=main)](https://github.com/web-vault-org/web-vault-crypto/actions/workflows/qa_main.yml)
 
 Crypto-Library for e2e encrypted web vaults,
 using [native web crypto api](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
