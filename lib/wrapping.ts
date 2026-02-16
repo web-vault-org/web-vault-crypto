@@ -4,7 +4,7 @@ import { decode, encode as encodeBase64 } from '@/base64';
 
 /**
  * wraps/encrypts keys
- * @param keys - keys to wrap/encrypt (length (in bytes) for each key must be multiple of 8)
+ * @param keys - keys to wrap/encrypt (length (in bytes) for each key must be multiple of 8 and at least 16)
  * @param kek - key used to encrypt the keys
  * @param encode - boolean, if wrapped keys should be base64-encoded
  * @returns Promise with wrappedKeys, as base64-encoded string if `encode` is true, as Uint8Array if not
@@ -65,4 +65,25 @@ const unwrapKeys = async function ({
   return splitByLengths(key, lengths ?? []);
 };
 
-export { wrapKeys, unwrapKeys };
+/**
+ * wraps/encrypts key
+ * @param key - key to wrap/encrypt (length (in bytes) must be multiple of 8 and at least 16)
+ * @param kek - key used to encrypt the key
+ * @param encode - boolean, if wrapped keys should be base64-encoded
+ * @returns Promise with wrappedKey, as base64-encoded string if `encode` is true, as Uint8Array if not
+ */
+const wrapKey = async function ({ key, kek, encode }: { key: Uint8Array; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
+  return await wrapKeys({ keys: [key], kek, encode });
+};
+
+/**
+ * unwraps/decrypts key
+ * @param wrappedKey - key to unwrap/decrypt
+ * @param kek - key used to encrypt the key
+ * @returns Promise with of unwrapped key
+ */
+const unwrapKey = async function ({ wrappedKey, kek }: { wrappedKey: Uint8Array | string; kek: Uint8Array }): Promise<Uint8Array> {
+  return (await unwrapKeys({ wrappedKeys: wrappedKey, kek })).at(0) as Uint8Array;
+};
+
+export { wrapKeys, unwrapKeys, wrapKey, unwrapKey };
