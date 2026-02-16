@@ -73,5 +73,8 @@ Read [API Documentation](./api.md) to see how to use the functions
 ## Crypto/Security
 Read [Security Concept](./crypto.md) to see the crypto/security concepts
 
+## Changelog
+Read [Changelog](./changelog.md) to see recent changes
+
 ## License
 This project is licensed under the [MIT License](./LICENSE.txt)
