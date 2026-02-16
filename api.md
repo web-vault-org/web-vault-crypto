@@ -42,11 +42,14 @@ To derive a key from a password, use the function `derivePasswordKey`, providing
 ```js
 import { derivePasswordKey } from 'web-vault-crypto';
 
-// using given salt
+// using given salt (default argon2id)
 const [_, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, salt: yourGivenSalt });
 
-// use new random salt
-const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32 });
+// use new random salt (specified argon2id)
+const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'argon2id' });
+
+// use new random salt (specified pbkdf2)
+const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'pbkdf2' });
 ```
 
 ### Parameters
@@ -56,6 +59,13 @@ A `string` providing the given password.
 
 #### sizeInBytes
 A `number` providing the desired key length in bytes. The example derives a key with 32 bytes.
+
+#### type
+On of:
+* `argon2id` &minus; argon2id is used ([See Details](./crypto.md#key-derivation--password-hashing))
+* `pbkdf2` &minus; PBKDF2 is used ([See Details](./crypto.md#key-derivation--password-hashing))
+
+Default: `argon2id`
 
 ### salt (optional)
 A `string` providing a given salt. If not provided a new random salt will be used.
@@ -72,11 +82,14 @@ To hash a password, use the function `hashPassword`, providing the password, the
 ```js
 import { hashPassword } from 'web-vault-crypto';
 
-// using given salt
+// using given salt (default argon2id)
 const [_, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, salt: yourGivenSalt });
 
-// use new random salt
-const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32 });
+// use new random salt (specified argon2id)
+const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'argon2id' });
+
+// use new random salt (specified pbkdf2)
+const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'pbkdf2' });
 ```
 
 ### Parameters
@@ -86,6 +99,13 @@ A `string` providing the given password.
 
 #### sizeInBytes
 A `number` providing the desired hash length in bytes. The example creates a 32 bytes hash.
+
+#### type
+On of:
+* `argon2id` &minus; argon2id is used ([See Details](./crypto.md#key-derivation--password-hashing))
+* `pbkdf2` &minus; PBKDF2 is used ([See Details](./crypto.md#key-derivation--password-hashing))
+
+Default: `argon2id`
 
 ### salt (optional)
 A `string` providing a given salt. If not provided a new random salt will be used.
