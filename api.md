@@ -2,6 +2,22 @@
 
 This file explains how to use the library's API.
 
+* [Key Generation](#key-generation)
+* Hashing
+  * [Key Derivation](#key-derivation) 
+  * [Password Hashing](#password-hashing)
+* Key Wrapping/Unwrapping
+  * [Wrap Keys](#wrap-keys)
+  * [Wrap Key](#wrap-key)
+  * [Unwrap Keys](#unwrap-keys)
+  * [Unwrap Key](#unwrap-key)
+* Encryption/Decryption
+  * [Encryption](#encryption)
+  * [Decryption](#decryption)
+* Sign/Verify
+  * [Sign](#sign)
+  * [Verify](#verify)
+
 ## Key generation
 To create a random key, use the function `createKey`, providing the key length in bytes.
 
