@@ -14,8 +14,8 @@ const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; ke
     throw new Error('Invalid kek length. Must be 16, 24 or 32');
   }
   const keysLength = keys.reduce((a, b) => a + b.length, 0);
-  if (keysLength <= 0 || keysLength % 8 > 0) {
-    throw new Error('Invalid keys length. Must be multiple of 8 bytes');
+  if (keysLength < 16 || keysLength % 8 > 0) {
+    throw new Error('Invalid keys length. Must be multiple of 8 bytes (at least 16)');
   }
 
   const crypto = getCrypto();

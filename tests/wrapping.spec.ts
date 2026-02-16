@@ -86,7 +86,13 @@ describe('wrapping', () => {
   describe('constraints', () => {
     it('wrapKeys rejects if keys length is not multiple of 8.', async () => {
       await expect(wrapKeys({ keys: [new Uint8Array(8), new Uint8Array(9)], kek: new Uint8Array(32) })).rejects.toThrow(
-        'Invalid keys length. Must be multiple of 8 bytes'
+        'Invalid keys length. Must be multiple of 8 bytes (at least 16)'
+      );
+    });
+
+    it('wrapKeys rejects if keys length is less then 16.', async () => {
+      await expect(wrapKeys({ keys: [new Uint8Array(5), new Uint8Array(3)], kek: new Uint8Array(32) })).rejects.toThrow(
+        'Invalid keys length. Must be multiple of 8 bytes (at least 16)'
       );
     });
 
