@@ -18,9 +18,9 @@ Used crypto-libraries:
 
 ## Features
 * key generation
-* password-based key derivation
-* password hashing
-* key wrapping and unwrapping
+* password-based key derivation &minus; argon2id
+* password hashing &minus; argon2id
+* key wrapping and unwrapping &minus; aeskeywrap
 * encryption and decryption &minus; `AEAD` using `AES-256-GCM`
 * signing and verification &minus; using `hmac`
 

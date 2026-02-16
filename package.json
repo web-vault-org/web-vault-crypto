@@ -52,9 +52,21 @@
   },
   "keywords": [
     "encryption",
+    "decryption",
     "crypto",
     "web",
-    "vault"
+    "vault",
+    "random key generation",
+    "hashing",
+    "key derivation",
+    "key wrap",
+    "sign",
+    "verify",
+    "aead",
+    "argon2id",
+    "hmac",
+    "aeskeywrap",
+    "aes-gcm"
   ],
   "author": "Johanna Herrmann",
   "license": "MIT",
