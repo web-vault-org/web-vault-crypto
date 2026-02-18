@@ -21,6 +21,7 @@ jobs:
 
       - name: Try to request OIDC token
         run: |
+          npm config set registry https://registry.npmjs.org/
           echo ".npmrc"
           echo "NPM_AUTH_TOKEN: $NPM_AUTH_TOKEN"
           cat /home/runner/work/_temp/.npmrc
