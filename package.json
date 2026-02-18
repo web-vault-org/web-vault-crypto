@@ -10,9 +10,6 @@
     "built",
     "dist"
   ],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -20,6 +17,9 @@
     "audit": "better-npm-audit audit",
     "qa": "npm run lint && npm run audit && npm run test",
     "build": "tsc --project tsconfig.json && tsc-alias -f -p tsconfig.json && webpack"
+  },
+  "dependencies": {
+    "argon2-browser": "^1.18.0"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
@@ -70,8 +70,5 @@
     "aes-gcm"
   ],
   "author": "Johanna Herrmann",
-  "license": "MIT",
-  "dependencies": {
-    "argon2-browser": "^1.18.0"
-  }
+  "license": "MIT"
 }
