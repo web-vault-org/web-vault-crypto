@@ -5,13 +5,13 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
       - name: Checkout repository
@@ -44,4 +44,4 @@ jobs:
         run: npm run build
 
       - name: Publish
-        run: npm publish --access public
+        run: npm publish
