@@ -21,7 +21,7 @@ jobs:
 
       - name: show registry
         run: |
-          npm config set registry
+          npm config get registry
 
       - name: Debug Environment Variables
         run: |
