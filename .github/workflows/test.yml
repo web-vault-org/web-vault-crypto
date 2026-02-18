@@ -23,6 +23,7 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
+          unset NODE_AUTH_TOKEN
           echo "---- NODE VARIABLES ----"
           env | grep NODE || true
           echo ""
@@ -32,6 +33,7 @@ jobs:
 
       - name: Try to request OIDC token
         run: |
+          unset NODE_AUTH_TOKEN
           echo "Requesting OIDC token..."
           curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
                "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm" \
