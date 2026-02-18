@@ -17,11 +17,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org/'
+          #registry-url: 'https://registry.npmjs.org/'
 
       - name: Try to request OIDC token
         run: |
           echo ".npmrc"
+          echo "NPM_AUTH_TOKEN: $NPM_AUTH_TOKEN"
           cat /home/runner/work/_temp/.npmrc
           rm /home/runner/work/_temp/.npmrc
           ls -la /home/runner/work/_temp/
