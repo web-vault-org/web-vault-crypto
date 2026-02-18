@@ -44,4 +44,6 @@ jobs:
         run: npm run build
 
       - name: Publish
-        run: npm publish
+        run: |
+          unset NODE_AUTH_TOKEN
+          npm publish
