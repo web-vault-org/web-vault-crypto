@@ -76,5 +76,9 @@ Read [Security Concept](./crypto.md) to see the crypto/security concepts
 ## Changelog
 Read [Changelog](./changelog.md) to see recent changes
 
+## Future
+Future Plans:
+* Add asymmetric crypto functions (public key / private key) (March &minus; June)
+
 ## License
 This project is licensed under the [MIT License](./LICENSE.txt)
