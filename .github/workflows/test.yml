@@ -1,0 +1,45 @@
+name: Test-OIDC
+
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Try to request OIDC token
+        run: |
+          echo ".npmrc"
+          cat /home/runner/work/_temp/.npmrc
+          rm /home/runner/work/_temp/.npmrc
+          ls -la /home/runner/work/_temp/
+
+      - name: Debug Environment Variables
+        run: |
+          unset NODE_AUTH_TOKEN
+          echo "---- NODE VARIABLES ----"
+          env | grep NODE || true
+          echo ""
+          echo "---- OIDC VARIABLES ----"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL"
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN"
+
+      - name: Try to request OIDC token
+        run: |
+          unset NODE_AUTH_TOKEN
+          echo "Requesting OIDC token..."
+          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm" \
+              | head -c 300
