@@ -43,7 +43,7 @@ jobs:
 
       - name: test after
         run: |
-          export NODE_AUTH_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN
+          export NODE_AUTH_TOKEN="$ACTIONS_ID_TOKEN_REQUEST_TOKEN"
           echo "NODE_AUTH_TOKEN=$NODE_AUTH_TOKEN"
           ls -la /home/runner/work/_temp/
           cat /home/runner/work/_temp/.npmrc
