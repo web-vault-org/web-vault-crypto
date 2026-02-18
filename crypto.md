@@ -6,10 +6,16 @@ This file explains how the cryptography is done internally.
 Keys are generated, using a cryptographically-secure random number generator.
 
 ## Key derivation / Password hashing
-Key derivation and password hashing are made, using argon2id, with following parameters:
-* Iterations: 2
-* Parallelism: 1
-* Memory: 24MiB
+Key derivation and password hashing are made...
+* if you specified `argon2id` as type or didn't specify any type: using argon2id
+  * with following parameters:
+    * Iterations: 2
+    * Parallelism: 1
+    * Memory: 24MiB
+  * using [argon2-browser](https://www.npmjs.com/package/argon2-browser) as library
+* if you specified `pbkf2` as type:
+    * 1 Million iterations
+    * Using [native web crypto api](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) as library
 
 ## Key wrapping/unwrapping
 Key wrapping/unwrapping (key encryption/decryption) is made, using aes-key-wrap. \

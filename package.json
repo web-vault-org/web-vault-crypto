@@ -1,6 +1,6 @@
 {
   "name": "web-vault-crypto",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Crypto-Library for e2e encrypted web vaults, using native web crypto api, written in typescript, easy to use.",
   "private": false,
   "type": "module",
@@ -10,6 +10,9 @@
     "built",
     "dist"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -49,9 +52,22 @@
   },
   "keywords": [
     "encryption",
+    "decryption",
     "crypto",
     "web",
-    "vault"
+    "vault",
+    "random key generation",
+    "hashing",
+    "key derivation",
+    "key wrap",
+    "sign",
+    "verify",
+    "aead",
+    "argon2id",
+    "pbkdf2",
+    "hmac",
+    "aeskeywrap",
+    "aes-gcm"
   ],
   "author": "Johanna Herrmann",
   "license": "MIT",

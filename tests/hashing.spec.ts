@@ -10,13 +10,34 @@ jest.mock('@/createKey', () => {
 });
 
 describe('hashing', () => {
-  it('derivePasswordKey creates key from password, using new salt.', async () => {
+  const argon2idHash = new Uint8Array([24, 27, 61, 130, 166, 76, 158, 118, 62, 106, 57, 57, 176, 85, 85, 199, 154, 35, 41, 53, 29, 249, 240, 0]);
+  const pbkdf2Hash = new Uint8Array([177, 57, 194, 63, 89, 103, 199, 10, 218, 30, 41, 67, 190, 9, 252, 161, 135, 109, 249, 67, 151, 133, 239, 226]);
+
+  it('derivePasswordKey creates key from password, using new salt, no type specified.', async () => {
     const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 24 });
 
     expect(salt).toEqual('AAAAAAAAAAAAAAAAAAAAAA==');
     expect(key).toBeInstanceOf(Uint8Array);
     expect(key.length).toBe(24);
-    expect(key).toEqual(new Uint8Array([24, 27, 61, 130, 166, 76, 158, 118, 62, 106, 57, 57, 176, 85, 85, 199, 154, 35, 41, 53, 29, 249, 240, 0]));
+    expect(key).toEqual(argon2idHash);
+  });
+
+  it('derivePasswordKey creates key from password, using new salt, type=argon2id.', async () => {
+    const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 24, type: 'argon2id' });
+
+    expect(salt).toEqual('AAAAAAAAAAAAAAAAAAAAAA==');
+    expect(key).toBeInstanceOf(Uint8Array);
+    expect(key.length).toBe(24);
+    expect(key).toEqual(argon2idHash);
+  });
+
+  it('derivePasswordKey creates key from password, using new salt, type=pbkdf2.', async () => {
+    const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 24, type: 'pbkdf2' });
+
+    expect(salt).toEqual('AAAAAAAAAAAAAAAAAAAAAA==');
+    expect(key).toBeInstanceOf(Uint8Array);
+    expect(key.length).toBe(24);
+    expect(key).toEqual(pbkdf2Hash);
   });
 
   it('derivePasswordKey creates key from password, using given salt.', async () => {

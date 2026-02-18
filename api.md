@@ -2,6 +2,22 @@
 
 This file explains how to use the library's API.
 
+* [Key Generation](#key-generation)
+* Hashing
+  * [Key Derivation](#key-derivation) 
+  * [Password Hashing](#password-hashing)
+* Key Wrapping/Unwrapping
+  * [Wrap Keys](#wrap-keys)
+  * [Wrap Key](#wrap-key)
+  * [Unwrap Keys](#unwrap-keys)
+  * [Unwrap Key](#unwrap-key)
+* Encryption/Decryption
+  * [Encryption](#encryption)
+  * [Decryption](#decryption)
+* Sign/Verify
+  * [Sign](#sign)
+  * [Verify](#verify)
+
 ## Key generation
 To create a random key, use the function `createKey`, providing the key length in bytes.
 
@@ -26,11 +42,14 @@ To derive a key from a password, use the function `derivePasswordKey`, providing
 ```js
 import { derivePasswordKey } from 'web-vault-crypto';
 
-// using given salt
+// using given salt (default argon2id)
 const [_, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, salt: yourGivenSalt });
 
-// use new random salt
-const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32 });
+// use new random salt (specified argon2id)
+const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'argon2id' });
+
+// use new random salt (specified pbkdf2)
+const [salt, key] = await derivePasswordKey({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'pbkdf2' });
 ```
 
 ### Parameters
@@ -40,6 +59,13 @@ A `string` providing the given password.
 
 #### sizeInBytes
 A `number` providing the desired key length in bytes. The example derives a key with 32 bytes.
+
+#### type
+On of:
+* `argon2id` &minus; argon2id is used ([See Details](./crypto.md#key-derivation--password-hashing))
+* `pbkdf2` &minus; PBKDF2 is used ([See Details](./crypto.md#key-derivation--password-hashing))
+
+Default: `argon2id`
 
 ### salt (optional)
 A `string` providing a given salt. If not provided a new random salt will be used.
@@ -56,11 +82,14 @@ To hash a password, use the function `hashPassword`, providing the password, the
 ```js
 import { hashPassword } from 'web-vault-crypto';
 
-// using given salt
+// using given salt (default argon2id)
 const [_, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, salt: yourGivenSalt });
 
-// use new random salt
-const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32 });
+// use new random salt (specified argon2id)
+const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'argon2id' });
+
+// use new random salt (specified pbkdf2)
+const [salt, hash] = await hashPassword({ password: 'p8ssw0rd!', sizeInBytes: 32, type: 'pbkdf2' });
 ```
 
 ### Parameters
@@ -70,6 +99,13 @@ A `string` providing the given password.
 
 #### sizeInBytes
 A `number` providing the desired hash length in bytes. The example creates a 32 bytes hash.
+
+#### type
+On of:
+* `argon2id` &minus; argon2id is used ([See Details](./crypto.md#key-derivation--password-hashing))
+* `pbkdf2` &minus; PBKDF2 is used ([See Details](./crypto.md#key-derivation--password-hashing))
+
+Default: `argon2id`
 
 ### salt (optional)
 A `string` providing a given salt. If not provided a new random salt will be used.
@@ -81,7 +117,8 @@ A Promise that fulfills with an array containing
 
 ## Wrap keys
 To wrap keys (the secure way to encrypt a key with another key), use the function `wrapKeys`, providing the keys to wrap,
-the wrapping-key and optionally an encode-toggle
+the wrapping-key and optionally an encode-toggle. \
+To wrap a single key, use the function [wrapKey](#wrap-key)
 
 ### Syntax
 ```js
@@ -98,7 +135,7 @@ const wrappedAsUintArray = await wrapKeys({ keys: [key1, key2], kek: keyToEncryp
 
 #### keys
 An array of `Uint8Array`s providing the keys you want to wrap/encrypt. \
-Length (in bytes) for each key must be multiple of 8.
+Length (in bytes) for each key must be multiple of 8 and at least 16.
 
 #### kek
 A `Uint8Array` providing key-encryption-key
@@ -115,20 +152,55 @@ A Promise that fulfills with...
 ### Notice
 A key wrapped as one key can be unwrapped as two or more keys later. So wrapping number must not be equal to unwrap number.
 
+## Wrap key
+To wrap a key (the secure way to encrypt a key with another key), use the function `wrapKey`, providing the key to wrap,
+the wrapping-key and optionally an encode-toggle. \
+To wrap more than one single key at once, use the function [wrapKeys](#wrap-keys)
+
+### Syntax
+```js
+import { wrapKey } from 'web-vault-crypto';
+
+// with base64Encoding
+const wrappedAndbase64Encoded = await wrapKey({ key: keyYouWantToEncrypt, kek: keyToEncryptKeys, encode: true });
+
+// without encoding
+const wrappedAsUintArray = await wrapKeys({ key: keyYouWantToEncrypt, kek: keyToEncryptKeys });
+```
+
+### Parameters
+
+#### key
+`Uint8Array` providing the key you want to wrap/encrypt. \
+Length (in bytes) for must be multiple of 8 and at least 16.
+
+#### kek
+A `Uint8Array` providing key-encryption-key
+
+#### encode (optional)
+A `boolean`, stating if wrapped keys should be base64-encoded. \
+Default: `false`
+
+### Return value
+A Promise that fulfills with...
+* If `encoded` is `true`: wrapped key as base64-encoded `string`
+* If `encoded` is `false`: wrapped key as `Uint8Array`
+
 ## Unwrap keys
 To unwrap keys (the secure way to decrypt a key with another key), use the function `unwrapKeys`, providing the keys to unwrap
-and the wrapping-key and optionally the key lengths
+and the wrapping-key and optionally the key lengths. \
+To unwrap a single key, use the function [unwrapKey](#unwrap-key)
 
 ### Syntax
 ```js
 import { unwrapKeys } from 'web-vault-crypto';
 
-const unwrapped = await unwrapKeys({ wrappedKey: wrapped, kek: keyToEncryptKeys, lengths: [64] });
+const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek: keyToEncryptKeys, lengths: [64] });
 ```
 
 ### Parameters
 
-#### keys
+#### wrappedKeys
 A `Uint8Array` or a base64-encoded `string`, providing the wrapped keys.
 
 #### kek
@@ -149,6 +221,29 @@ A Promise that fulfills with an array of `Uint8Array`s, providing the unwrapped 
 
 ### Notice
 A key wrapped as one key can be unwrapped as two or more keys later. So wrapping number must not be equal to unwrap number.
+
+## Unwrap key
+To unwrap a key (the secure way to decrypt a key with another key), use the function `unwrapKey`, providing the key to unwrap
+and the wrapping-key. \
+To unwrap more than one single key at once, use the function [unwrapKeys](#unwrap-keys)
+
+### Syntax
+```js
+import { unwrapKey } from 'web-vault-crypto';
+
+const unwrapped = await unwrapKey({ wrappedKey: wrapped, kek: keyToEncryptKeys });
+```
+
+### Parameters
+
+#### wrappedKey
+A `Uint8Array` or a base64-encoded `string`, providing the wrapped keys.
+
+#### kek
+A `Uint8Array` providing key-encryption-key
+
+### Return value
+A Promise that fulfills with a `Uint8Array`, providing the unwrapped key.
 
 ## Encryption
 To encrypt a string or a Uint8Array, use the function `encrypt`,

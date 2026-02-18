@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { wrapKeys, unwrapKeys } from '@/wrapping';
+import { wrapKeys, unwrapKeys, wrapKey, unwrapKey } from '@/wrapping';
 
 function randomBytes(length: number): Uint8Array {
   const arr = new Uint8Array(length);
@@ -16,19 +16,25 @@ describe('wrapping', () => {
     keys = [randomBytes(16), randomBytes(16)];
   });
 
-  it('wrapKey returns Uint8Array', async () => {
+  it('wrapKeys returns Uint8Array', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     expect(wrapped).toBeInstanceOf(Uint8Array);
-    expect(wrapped.length).toBeGreaterThan(0);
+    expect(wrapped.length).toBe(40);
   });
 
-  it('wrapKey with Base64-Encoding.', async () => {
+  it('wrapKey returns Uint8Array', async () => {
+    const wrapped = await wrapKey({ key: keys.at(0) as Uint8Array, kek });
+    expect(wrapped).toBeInstanceOf(Uint8Array);
+    expect(wrapped.length).toBe(24);
+  });
+
+  it('wrapKeys with Base64-Encoding.', async () => {
     const wrappedBase64 = await wrapKeys({ keys, kek, encode: true });
     expect(typeof wrappedBase64).toBe('string');
     expect(wrappedBase64).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
   });
 
-  it('unwrapKey returns original keys.', async () => {
+  it('unwrapKeys returns original keys.', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: keys.map((k) => k.length) });
 
@@ -38,7 +44,15 @@ describe('wrapping', () => {
     });
   });
 
-  it('unwrapKey without length returns one-value-array with full length.', async () => {
+  it('unwrapKey returns original keys.', async () => {
+    const wrapped = await wrapKey({ key: keys.at(0) as Uint8Array, kek });
+    const unwrapped = await unwrapKey({ wrappedKey: wrapped, kek });
+
+    expect(unwrapped.length).toBe(keys.at(0)?.length);
+    expect(unwrapped).toEqual(keys.at(0));
+  });
+
+  it('unwrapKeys without length returns one-value-array with full length.', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek });
 
@@ -52,7 +66,7 @@ describe('wrapping', () => {
     expect(unwrapped[0]).toEqual(mergedOriginal);
   });
 
-  it('unwrapKey with partially filled length-Array handles remaining correctly', async () => {
+  it('unwrapKeys with partially filled length-Array handles remaining correctly', async () => {
     const wrapped = await wrapKeys({ keys, kek });
     const partialLength = [16];
     const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: partialLength });
@@ -86,7 +100,13 @@ describe('wrapping', () => {
   describe('constraints', () => {
     it('wrapKeys rejects if keys length is not multiple of 8.', async () => {
       await expect(wrapKeys({ keys: [new Uint8Array(8), new Uint8Array(9)], kek: new Uint8Array(32) })).rejects.toThrow(
-        'Invalid keys length. Must be multiple of 8 bytes'
+        'Invalid keys length. Must be multiple of 8 bytes (at least 16)'
+      );
+    });
+
+    it('wrapKeys rejects if keys length is less then 16.', async () => {
+      await expect(wrapKeys({ keys: [new Uint8Array(5), new Uint8Array(3)], kek: new Uint8Array(32) })).rejects.toThrow(
+        'Invalid keys length. Must be multiple of 8 bytes (at least 16)'
       );
     });
 
