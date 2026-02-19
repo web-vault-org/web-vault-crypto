@@ -1,26 +1,53 @@
-name: Release-Test
+name: Publish Package
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write
   contents: read
 
 jobs:
-  pubRel:
+  publish:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v6
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensure tag points to main
+        run: |
+          git fetch origin main
+          TAG_COMMIT=$(git rev-parse $GITHUB_REF)
+          MAIN_COMMIT=$(git rev-parse origin/main)
+          if [ "$TAG_COMMIT" != "$MAIN_COMMIT" ]; then
+            echo "Tag is not on main branch, skipping release."
+            exit 1
+          fi
+
+      - name: Setup Node.js with required version for OIDC
+        uses: actions/setup-node@v4
         with:
-          node-version: '24.13.1'
+          # Trusted publishing requires npm CLI version 11.5.1 or later and Node version 22.14.0 or higher
+          node-version: '22.14.0'
           registry-url: 'https://registry.npmjs.org'
-      #- run: npm install -g npm@latest
-      - run: npm install
-      - run: npm run test
-      - run: npm run build
-      - run: npm publish
+
+      - name: install required npm version for OIDC
+        # Trusted publishing requires npm CLI version 11.5.1 or later and Node version 22.14.0 or higher
+        run: npm install -g npm@11.5.1
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: QA
+        run: npm run qa
+
+      - name: Build project
+        run: npm run build
+
+      - name: Publish
+        #provenance flag sometimes required, due to a bug?
+        #https://philna.sh/blog/2026/01/28/trusted-publishing-npm/
+        run: npm publish --provenance
