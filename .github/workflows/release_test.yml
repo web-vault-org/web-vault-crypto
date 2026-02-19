@@ -1,4 +1,4 @@
-name: Release
+name: Release-Test
 
 on:
   workflow_dispatch:
@@ -32,4 +32,4 @@ jobs:
         run: npm run build
 
       - name: Publish
-        run: npm publish --dry-run
+        run: npm publish
