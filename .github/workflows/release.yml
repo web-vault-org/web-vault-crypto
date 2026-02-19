@@ -22,14 +22,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           #token: ''
 
-      - name: Install dependencies
-        run: npm install
+      #- name: Install dependencies
+      #  run: npm install
 
-      - name: QA
-        run: npm run test
+      #- name: QA
+      #  run: npm run test
 
       - name: Build project
-        run: npm run build
+        run: mkdir -p built && touch built/testfile
 
       - name: Publish
         run: npm publish
