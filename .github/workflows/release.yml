@@ -32,4 +32,6 @@ jobs:
         run: mkdir -p built && touch built/testfile
 
       - name: Publish
-        run: npm publish
+        run: |
+          rm /home/runner/work/_temp/.npmrc
+          npm publish
