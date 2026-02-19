@@ -17,9 +17,9 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '22.14.0'
+          node-version: '24.13.1'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install -g npm@latest
+      #- run: npm install -g npm@latest
       - run: npm install
       - run: npm run test
       - run: npm run build
