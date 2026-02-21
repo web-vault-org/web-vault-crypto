@@ -28,8 +28,7 @@ The encryption process goes as follows:
 * Generate new random key (256 bit)
 * Use generated key to encrypt content via AES-GCM
 * Wrap generated key with given key
-* Concatenate: 0x00 | wrapped key | encrypted content
-  (The 0x00 is a flag to detect symmetric encryption)
+* Concatenate: wrapped key | encrypted content
 
 The decryption process goes as follows:
 * extract wrapped key and encrypted content
