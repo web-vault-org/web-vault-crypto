@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.2.0 2026-02-21
+
+### !!BREAKING CHANGES!!
+(see fixes)
+
+### Fixes:
+* Fixes wrapKey: keys longer then 32 bytes aren't supported by native web crypto API. \
+  web crypto API limits key lengths for aes-key-wrap to 16, 24 or 32 bytes,
+  so multiple keys are wrapped separately now and error messages are improved
+
+### Docs
+* Adapts docs to changes
+
 ## v0.1.0 2026-02-19
 
 ### Features

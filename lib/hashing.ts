@@ -2,6 +2,7 @@ import { getArgon2Hash } from '@/argon2';
 import { createKey } from '@/createKey';
 import { encode } from '@/base64';
 import { getCrypto } from '@/crypto';
+import { importKey } from '@/util';
 
 const createNewSalt = async function () {
   const key = await createKey({ sizeInBytes: 16 });
@@ -41,7 +42,7 @@ const createHashPbkdf2 = async function ({
   const crypto = getCrypto();
   const encoder = new TextEncoder();
 
-  const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), { name: 'PBKDF2' }, false, ['deriveBits']);
+  const keyMaterial = await importKey(encoder.encode(password), 'PBKDF2', ['deriveBits'], false);
   const saltBytes = encoder.encode(salt);
 
   const derivedBits = await crypto.subtle.deriveBits(

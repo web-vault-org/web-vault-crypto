@@ -1,27 +1,26 @@
 import { getCrypto } from '@/crypto';
-import { importKey, mergeUint8Array, splitByLengths } from '@/util';
+import { importKey } from '@/util';
 import { decode, encode as encodeBase64 } from '@/base64';
 
 /**
- * wraps/encrypts keys
- * @param keys - keys to wrap/encrypt (length (in bytes) for each key must be multiple of 8 and at least 16)
- * @param kek - key used to encrypt the keys
+ * wraps/encrypts key
+ * @param key - key to wrap/encrypt (length (in bytes) must be 16, 24 or 32 bytes)
+ * @param kek - key used to encrypt the keys (length (in bytes) must be 16, 24 or 32 bytes)
  * @param encode - boolean, if wrapped keys should be base64-encoded
  * @returns Promise with wrappedKeys, as base64-encoded string if `encode` is true, as Uint8Array if not
  */
-const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
+const wrapKey = async function ({ key, kek, encode }: { key: Uint8Array; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
   if (kek.length !== 16 && kek.length !== 24 && kek.length !== 32) {
     throw new Error('Invalid kek length. Must be 16, 24 or 32');
   }
-  const keysLength = keys.reduce((a, b) => a + b.length, 0);
-  if (keysLength < 16 || keysLength % 8 > 0) {
-    throw new Error('Invalid keys length. Must be multiple of 8 bytes (at least 16)');
+
+  if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
+    throw new Error('Invalid key length. Must be 16, 24 or 32');
   }
 
   const crypto = getCrypto();
-  const key = mergeUint8Array(keys);
-  const keyMaterial = await importKey(key, 'AES-KW', ['wrapKey']);
-  const kekMaterial = await importKey(kek, 'AES-KW', ['wrapKey']);
+  const keyMaterial = await importKey(key, 'AES-KW', ['wrapKey'], true);
+  const kekMaterial = await importKey(kek, 'AES-KW', ['wrapKey'], true);
   const wrapped = await crypto.subtle.wrapKey('raw', keyMaterial, kekMaterial, { name: 'AES-KW' });
 
   if (encode) {
@@ -31,59 +30,65 @@ const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; ke
 };
 
 /**
- * unwraps/decrypts keys
- * @param wrappedKeys - keys to unwrap/decrypt
- * @param kek - key used to encrypt the keys
- * @param lengths - An array of `number`s, providing the lengths of the unwrapped keys
- * @returns Promise with an array of unwrapped keys
+ * unwraps/decrypts key
+ * @param wrappedKey - key to unwrap/decrypt (Uint8Array or base64-encoded string)
+ * @param kek - key used to encrypt the keys (length (in bytes) must be 16, 24 or 32 bytes)
+ * @returns Promise with unwrapped key (Uint8Array)
  */
-const unwrapKeys = async function ({
-  wrappedKeys,
-  kek,
-  lengths
+const unwrapKey = async function ({
+  wrappedKey,
+  kek
 }: {
-  wrappedKeys: Uint8Array | string;
+  wrappedKey: Uint8Array | string;
   kek: Uint8Array;
   lengths?: number[];
-}): Promise<Uint8Array[]> {
+}): Promise<Uint8Array> {
   if (kek.length !== 16 && kek.length !== 24 && kek.length !== 32) {
     throw new Error('Invalid kek length. Must be 16, 24 or 32');
   }
 
   const crypto = getCrypto();
-  const kekMaterial = await importKey(kek, 'AES-KW', ['unwrapKey']);
-  const wrappedKey = typeof wrappedKeys === 'string' ? decode(wrappedKeys) : wrappedKeys;
+  const kekMaterial = await importKey(kek, 'AES-KW', ['unwrapKey'], true);
+  const wrappedKeyDecoded = typeof wrappedKey === 'string' ? decode(wrappedKey) : wrappedKey;
 
-  const unwrappedKey = await crypto.subtle.unwrapKey('raw', wrappedKey.buffer, kekMaterial, { name: 'AES-KW' }, { name: 'AES-KW' }, true, [
+  const unwrappedKey = await crypto.subtle.unwrapKey('raw', wrappedKeyDecoded.buffer, kekMaterial, { name: 'AES-KW' }, { name: 'AES-KW' }, true, [
     'wrapKey',
     'unwrapKey'
   ]);
 
   const rawKey = await crypto.subtle.exportKey('raw', unwrappedKey);
-  const key = new Uint8Array(rawKey);
-
-  return splitByLengths(key, lengths ?? []);
+  return new Uint8Array(rawKey);
 };
 
 /**
- * wraps/encrypts key
- * @param key - key to wrap/encrypt (length (in bytes) must be multiple of 8 and at least 16)
- * @param kek - key used to encrypt the key
+ * wraps/encrypts keys
+ * @param keys - keys to wrap/encrypt (length (in bytes) for each key must be 16, 24 or 32 bytes)
+ * @param kek - key used to encrypt the keys (length (in bytes) must be 16, 24 or 32 bytes)
  * @param encode - boolean, if wrapped keys should be base64-encoded
- * @returns Promise with wrappedKey, as base64-encoded string if `encode` is true, as Uint8Array if not
+ * @returns Promise with wrappedKeys, as array of base64-encoded strings if `encode` is true, of Uint8Arrays if not
  */
-const wrapKey = async function ({ key, kek, encode }: { key: Uint8Array; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
-  return await wrapKeys({ keys: [key], kek, encode });
+const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek: Uint8Array; encode?: boolean }): Promise<(Uint8Array | string)[]> {
+  const wrappedKeys: (Uint8Array | string)[] = [];
+  for (const key of keys) {
+    const wrappedKey = await wrapKey({ key, kek, encode });
+    wrappedKeys.push(wrappedKey);
+  }
+  return wrappedKeys;
 };
 
 /**
- * unwraps/decrypts key
- * @param wrappedKey - key to unwrap/decrypt
- * @param kek - key used to encrypt the key
- * @returns Promise with of unwrapped key
+ * unwraps/decrypts keys
+ * @param wrappedKeys - keys to unwrap/decrypt (array of Uint8Arrays or base64-encoded strings)
+ * @param kek - key used to encrypt the keys (length (in bytes) must be 16, 24 or 32 bytes)
+ * @returns Promise with unwrapped key (array of Uint8Arrays)
  */
-const unwrapKey = async function ({ wrappedKey, kek }: { wrappedKey: Uint8Array | string; kek: Uint8Array }): Promise<Uint8Array> {
-  return (await unwrapKeys({ wrappedKeys: wrappedKey, kek })).at(0) as Uint8Array;
+const unwrapKeys = async function ({ wrappedKeys, kek }: { wrappedKeys: (Uint8Array | string)[]; kek: Uint8Array }): Promise<Uint8Array[]> {
+  const keys: Uint8Array[] = [];
+  for (const wrappedKey of wrappedKeys) {
+    const key = await unwrapKey({ wrappedKey, kek });
+    keys.push(key);
+  }
+  return keys;
 };
 
-export { wrapKeys, unwrapKeys, wrapKey, unwrapKey };
+export { wrapKey, unwrapKey, wrapKeys, unwrapKeys };
