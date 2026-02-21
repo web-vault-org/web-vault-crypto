@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.0 2026-02-21
+## v0.1.1 2026-02-21
 
 ### !!BREAKING CHANGES!!
 (see fixes)
