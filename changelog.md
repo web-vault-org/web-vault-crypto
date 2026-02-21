@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.2.0 2026-02-21
+
+### !!BREAKING CHANGES!!
+(see fixes)
+
+### Fixes:
+* Fixes wrapKey: keys longer then 32 bytes aren't supported by native web crypto API.
+* Flagged encryption: To differentiate between symmetric and asymmetric encryption ciphertext begins with a flag:
+  * 0x00 for symmetric
+  (this is a preparation for planned feature: asymmetric crypto functions)
+
+### Docs
+* Adapts docs to changes
+
 ## v0.1.0 2026-02-19
 
 ### Features

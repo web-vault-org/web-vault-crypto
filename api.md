@@ -7,10 +7,10 @@ This file explains how to use the library's API.
   * [Key Derivation](#key-derivation) 
   * [Password Hashing](#password-hashing)
 * Key Wrapping/Unwrapping
-  * [Wrap Keys](#wrap-keys)
   * [Wrap Key](#wrap-key)
-  * [Unwrap Keys](#unwrap-keys)
+  * [Wrap Keys](#wrap-keys)
   * [Unwrap Key](#unwrap-key)
+  * [Unwrap Keys](#unwrap-keys)
 * Encryption/Decryption
   * [Encryption](#encryption)
   * [Decryption](#decryption)
@@ -115,43 +115,6 @@ A Promise that fulfills with an array containing
 * The given or newly generated salt as `string`
 * The hash as base64-encoded `string`
 
-## Wrap keys
-To wrap keys (the secure way to encrypt a key with another key), use the function `wrapKeys`, providing the keys to wrap,
-the wrapping-key and optionally an encode-toggle. \
-To wrap a single key, use the function [wrapKey](#wrap-key)
-
-### Syntax
-```js
-import { wrapKeys } from 'web-vault-crypto';
-
-// with base64Encoding
-const wrappedAndbase64Encoded = await wrapKeys({ keys: [key1, key2], kek: keyToEncryptKeys, encode: true });
-
-// without encoding
-const wrappedAsUintArray = await wrapKeys({ keys: [key1, key2], kek: keyToEncryptKeys });
-```
-
-### Parameters
-
-#### keys
-An array of `Uint8Array`s providing the keys you want to wrap/encrypt. \
-Length (in bytes) for each key must be multiple of 8 and at least 16.
-
-#### kek
-A `Uint8Array` providing key-encryption-key
-
-#### encode (optional)
-A `boolean`, stating if wrapped keys should be base64-encoded. \
-Default: `false`
-
-### Return value
-A Promise that fulfills with...
-* If `encoded` is `true`: wrapped keys as base64-encoded `string`
-* If `encoded` is `false`: wrapped keys as `Uint8Array`
-
-### Notice
-A key wrapped as one key can be unwrapped as two or more keys later. So wrapping number must not be equal to unwrap number.
-
 ## Wrap key
 To wrap a key (the secure way to encrypt a key with another key), use the function `wrapKey`, providing the key to wrap,
 the wrapping-key and optionally an encode-toggle. \
@@ -172,10 +135,11 @@ const wrappedAsUintArray = await wrapKeys({ key: keyYouWantToEncrypt, kek: keyTo
 
 #### key
 `Uint8Array` providing the key you want to wrap/encrypt. \
-Length (in bytes) for must be multiple of 8 and at least 16.
+Length (in bytes) must be 16, 24 or 32 bytes.
 
 #### kek
-A `Uint8Array` providing key-encryption-key
+A `Uint8Array` providing key-encryption-key. \
+Length (in bytes) must be 16, 24 or 32 bytes.
 
 #### encode (optional)
 A `boolean`, stating if wrapped keys should be base64-encoded. \
@@ -186,41 +150,40 @@ A Promise that fulfills with...
 * If `encoded` is `true`: wrapped key as base64-encoded `string`
 * If `encoded` is `false`: wrapped key as `Uint8Array`
 
-## Unwrap keys
-To unwrap keys (the secure way to decrypt a key with another key), use the function `unwrapKeys`, providing the keys to unwrap
-and the wrapping-key and optionally the key lengths. \
-To unwrap a single key, use the function [unwrapKey](#unwrap-key)
+## Wrap keys
+To wrap keys (the secure way to encrypt a key with another key), use the function `wrapKeys`, providing the keys to wrap,
+the wrapping-key and optionally an encode-toggle. \
+To wrap a single key, use the function [wrapKey](#wrap-key)
 
 ### Syntax
 ```js
-import { unwrapKeys } from 'web-vault-crypto';
+import { wrapKeys } from 'web-vault-crypto';
 
-const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek: keyToEncryptKeys, lengths: [64] });
+// with base64Encoding
+const wrappedAndbase64Encoded = await wrapKeys({ keys: [key1, key2], kek: keyToEncryptKeys, encode: true });
+
+// without encoding
+const wrappedAsUintArray = await wrapKeys({ keys: [key1, key2], kek: keyToEncryptKeys });
 ```
 
 ### Parameters
 
-#### wrappedKeys
-A `Uint8Array` or a base64-encoded `string`, providing the wrapped keys.
+#### keys
+An array of `Uint8Array`s providing the keys you want to wrap/encrypt. \
+Length (in bytes) for each key must be 16, 24 or 32 bytes.
 
 #### kek
-A `Uint8Array` providing key-encryption-key
+A `Uint8Array` providing key-encryption-key. \
+Length (in bytes) must be 16, 24 or 32 bytes.
 
-#### lengths (optionally)
-An array of `number`s, providing the lengths of the unwrapped keys. \
-This parameter controls, how the unwrapped key will be split into multiple keys.
-* Not provided or empty: No splitting, one key
-* If provided: key will be split according to lengths \
-  Example:
-  * wrapped keys length: 128
-  * provided lengths: [64, 32]
-  * split key lengths: 64, 32, remaining (32)
+#### encode (optional)
+A `boolean`, stating if wrapped keys should be base64-encoded. \
+Default: `false`
 
 ### Return value
-A Promise that fulfills with an array of `Uint8Array`s, providing the unwrapped keys.
-
-### Notice
-A key wrapped as one key can be unwrapped as two or more keys later. So wrapping number must not be equal to unwrap number.
+A Promise that fulfills with...
+* If `encoded` is `true`: wrapped keys as array of base64-encoded `string`s
+* If `encoded` is `false`: wrapped keys as array of `Uint8Array`s
 
 ## Unwrap key
 To unwrap a key (the secure way to decrypt a key with another key), use the function `unwrapKey`, providing the key to unwrap
@@ -231,7 +194,7 @@ To unwrap more than one single key at once, use the function [unwrapKeys](#unwra
 ```js
 import { unwrapKey } from 'web-vault-crypto';
 
-const unwrapped = await unwrapKey({ wrappedKey: wrapped, kek: keyToEncryptKeys });
+const unwrapped = await unwrapKey({ wrappedKey: wrapped, kek: keyToEncryptKey });
 ```
 
 ### Parameters
@@ -240,10 +203,35 @@ const unwrapped = await unwrapKey({ wrappedKey: wrapped, kek: keyToEncryptKeys }
 A `Uint8Array` or a base64-encoded `string`, providing the wrapped keys.
 
 #### kek
-A `Uint8Array` providing key-encryption-key
+A `Uint8Array` providing key-encryption-key. \
+Length (in bytes) must be 16, 24 or 32.
 
 ### Return value
 A Promise that fulfills with a `Uint8Array`, providing the unwrapped key.
+
+## Unwrap keys
+To unwrap keys (the secure way to decrypt a key with another key), use the function `unwrapKeys`, providing the keys to unwrap
+and the wrapping-key. \
+To unwrap a single key, use the function [unwrapKey](#unwrap-key)
+
+### Syntax
+```js
+import { unwrapKeys } from 'web-vault-crypto';
+
+const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek: keyToEncryptKeys });
+```
+
+### Parameters
+
+#### wrappedKeys
+An array of `Uint8Array`s or a base64-encoded `string`s, providing the wrapped keys.
+
+#### kek
+A `Uint8Array` providing key-encryption-key. \
+Length (in bytes) must be 16, 24 or 32.
+
+### Return value
+A Promise that fulfills with an array of `Uint8Array`s, providing the unwrapped keys.
 
 ## Encryption
 To encrypt a string or a Uint8Array, use the function `encrypt`,

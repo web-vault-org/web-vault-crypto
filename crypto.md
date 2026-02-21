@@ -19,7 +19,7 @@ Key derivation and password hashing are made...
 
 ## Key wrapping/unwrapping
 Key wrapping/unwrapping (key encryption/decryption) is made, using aes-key-wrap. \
-All given keys are wrapped together.
+All given keys are wrapped separately.
 
 ## encryption/decryption
 Encryption/decryption is made, using AES-256-GCM
@@ -28,10 +28,11 @@ The encryption process goes as follows:
 * Generate new random key (256 bit)
 * Use generated key to encrypt content via AES-GCM
 * Wrap generated key with given key
-* Concatenate wrapped key and encrypted content
+* Concatenate: 0x00 | wrapped key | encrypted content
+  (The 0x00 is a flag to detect symmetric encryption)
 
 The decryption process goes as follows:
-* Split wrapped key and encrypted content
+* extract wrapped key and encrypted content
 * Unwrap generated key with given key
 * Use generated key to decrypt content via AES-GCM
 
