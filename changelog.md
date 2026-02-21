@@ -6,10 +6,9 @@
 (see fixes)
 
 ### Fixes:
-* Fixes wrapKey: keys longer then 32 bytes aren't supported by native web crypto API.
-* Flagged encryption: To differentiate between symmetric and asymmetric encryption ciphertext begins with a flag:
-  * 0x00 for symmetric
-  (this is a preparation for planned feature: asymmetric crypto functions)
+* Fixes wrapKey: keys longer then 32 bytes aren't supported by native web crypto API. \
+  web crypto API limits key lengths for aes-key-wrap to 16, 24 or 32 bytes,
+  so multiple keys are wrapped separately now and error messages are improved
 
 ### Docs
 * Adapts docs to changes
