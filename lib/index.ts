@@ -1,9 +1,6 @@
-import { createKey } from '@/createKey';
-import { derivePasswordKey, hashPassword } from '@/hashing';
-import { wrapKeys, unwrapKeys } from '@/wrapping';
-import { encrypt, decrypt } from '@/encryption';
-import { sign, verify } from '@/signing';
+import exp from '@/symmetric';
+import { createKey, derivePasswordKey, hashPassword, wrapKeys, unwrapKeys, encrypt, decrypt, sign, verify } from '@/symmetric';
 
-export default { createKey, derivePasswordKey, hashPassword, wrapKeys, unwrapKeys, encrypt, decrypt, sign, verify };
+export default exp;
 
 export { createKey, derivePasswordKey, hashPassword, wrapKeys, unwrapKeys, encrypt, decrypt, sign, verify };

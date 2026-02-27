@@ -6,7 +6,7 @@ export default {
   testMatch: ['**/tests/**/*.spec.ts'],
   moduleNameMapper: {
     '@/crypto': '<rootDir>/tests/cryptoTest',
-    '@/argon2': '<rootDir>/tests/argon2Test',
+    '@/symmetric/argon2': '<rootDir>/tests/symmetric/argon2Test',
     '@/(.*)': '<rootDir>/lib/$1',
     '#/(.*)': '<rootDir>/tests/$1'
   },
