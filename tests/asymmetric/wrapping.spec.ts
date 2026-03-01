@@ -12,10 +12,11 @@ describe('wrapPrivateSigningKey / unwrapPrivateSigningKey', () => {
     symmetricKey = crypto.webcrypto.getRandomValues(new Uint8Array(32));
   });
 
-  it('should wrap and unwrap the private key correctly.', async () => {
+  it('should wrap and unwrap the private key correctly, base64 string.', async () => {
     const wrappedKey = await wrapPrivateSigningKey({
       privateSigningKey: privateKeyPem,
-      key: symmetricKey
+      key: symmetricKey,
+      encode: true
     });
 
     const unwrappedKey = await unwrapPrivateSigningKey({
@@ -28,10 +29,27 @@ describe('wrapPrivateSigningKey / unwrapPrivateSigningKey', () => {
     expect(unwrappedKey).toBe(privateKeyPem);
   });
 
-  it('should fail to unwrap with a wrong key.', async () => {
+  it('should wrap and unwrap the private key correctly, Uint8Array.', async () => {
     const wrappedKey = await wrapPrivateSigningKey({
       privateSigningKey: privateKeyPem,
       key: symmetricKey
+    });
+
+    const unwrappedKey = await unwrapPrivateSigningKey({
+      wrappedPrivateSigningKey: wrappedKey,
+      key: symmetricKey
+    });
+
+    expect(wrappedKey).toBeInstanceOf(Uint8Array);
+    expect(wrappedKey.length).toBeGreaterThan(20);
+    expect(unwrappedKey).toBe(privateKeyPem);
+  });
+
+  it('should fail to unwrap with a wrong key.', async () => {
+    const wrappedKey = await wrapPrivateSigningKey({
+      privateSigningKey: privateKeyPem,
+      key: symmetricKey,
+      encode: true
     });
 
     const wrongKey = crypto.getRandomValues(new Uint8Array(32));
@@ -45,8 +63,8 @@ describe('wrapPrivateSigningKey / unwrapPrivateSigningKey', () => {
   });
 
   it('should produce different ciphertexts on multiple wraps.', async () => {
-    const wrappedKey1 = await wrapPrivateSigningKey({ privateSigningKey: privateKeyPem, key: symmetricKey });
-    const wrappedKey2 = await wrapPrivateSigningKey({ privateSigningKey: privateKeyPem, key: symmetricKey });
+    const wrappedKey1 = await wrapPrivateSigningKey({ privateSigningKey: privateKeyPem, key: symmetricKey, encode: true });
+    const wrappedKey2 = await wrapPrivateSigningKey({ privateSigningKey: privateKeyPem, key: symmetricKey, encode: true });
 
     expect(wrappedKey1).not.toBe(wrappedKey2);
   });

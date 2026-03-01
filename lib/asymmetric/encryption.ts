@@ -54,6 +54,14 @@ const unwrapKeyWithPrivateKey = async function (wrappedKey: Uint8Array, privateK
   return new Uint8Array(unwrappedKeyExported);
 };
 
+/**
+ * encrypts a string or a Uint8Array with one or more public keys (RSA-OAEP)
+ * @param content - the content to be encrypted
+ * @param publicKeys - array of strings, with public keys (PEM)
+ * @param encode - boolean, if plaintext should be base64-encoded
+ * @param additionalData array of strings, with additional Data for integrity and authenticity checks
+ * @returns Promise with ciphertext, as base64-encoded string if `encode` is true, as Uint8Array if not
+ */
 const encrypt = async function ({
   content,
   publicKeys,
@@ -83,6 +91,17 @@ const encrypt = async function ({
   return encode ? encodeBase64(result) : result;
 };
 
+/**
+ * decrypts a string or a Uint8Array with a private key (RSA-OAEP)
+ * @param content - ciphertext as string or Uint8Array
+ * @param privateKey - private key (PEM)
+ * @param keyIndex - index, determining which public key the private key belongs to.
+ * example: On encryption three public keys where provided, the private key provided on decryption belong to the second public key, so provide 2 as keyIndex
+ * (keyIndex is 1-based)
+ * @param asString - boolean, if plaintext should be returned as string
+ * @param additionalData - array of strings, with additional Data for integrity and authenticity checks
+ * @returns Promise with plaintext, as string if `asString` is true, as Uint8Array if not
+ */
 const decrypt = async function ({
   content,
   privateKey,
@@ -104,7 +123,7 @@ const decrypt = async function ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, wrappedKeys, iv, ciphertext] = splitByLengths(data, [1, length * 256, 12]);
 
-  const start = 256 * keyIndex;
+  const start = 256 * (keyIndex - 1);
   const wrappedKey = wrappedKeys.slice(start, start + 256);
   const key = await unwrapKeyWithPrivateKey(wrappedKey, privateKey);
   const contentKey = await importKey(key, 'AES-GCM', usages, true);

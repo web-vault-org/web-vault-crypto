@@ -75,13 +75,13 @@ describe('encryption', () => {
     const decrypted1 = await decrypt({
       content: encrypted,
       privateKey: privateKeyPem1,
-      keyIndex: 0,
+      keyIndex: 1,
       asString: true
     });
     const decrypted2 = await decrypt({
       content: encrypted,
       privateKey: privateKeyPem2,
-      keyIndex: 1,
+      keyIndex: 2,
       asString: true
     });
 

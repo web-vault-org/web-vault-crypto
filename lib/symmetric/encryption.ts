@@ -26,7 +26,7 @@ const encodeAAD = function (additionalData?: string[]): Uint8Array | undefined {
 };
 
 /**
- * encrypts a string or a Uint8Array
+ * encrypts a string or a Uint8Array with a secret key
  * @param content - plaintext as string or Uint8Array
  * @param key - key as Uint8Array
  * @param encode - boolean, if plaintext should be base64-encoded
@@ -64,7 +64,7 @@ const encrypt = async function ({
 };
 
 /**
- * decrypts a string or a Uint8Array
+ * decrypts a string or a Uint8Array with a secret key
  * @param content - ciphertext as string or Uint8Array
  * @param key - key as Uint8Array
  * @param asString - boolean, if plaintext should be returned as string

@@ -6,6 +6,10 @@ interface KeyPairPem {
   privateKey: string;
 }
 
+/**
+ * Creates an Ed25519 public/private key pair for sign and verify.
+ * @returns Promise with the key pair object containing publicKey and privateKey
+ */
 const createSigningKeyPair = async function (): Promise<KeyPairPem> {
   const crypto = getCrypto();
   const pair = await crypto.subtle.generateKey(
@@ -25,6 +29,10 @@ const createSigningKeyPair = async function (): Promise<KeyPairPem> {
   };
 };
 
+/**
+ * Creates an RSA-OAEP public/private key pair for encryption and decryption.
+ * @returns Promise with the key pair object containing publicKey and privateKey
+ */
 const createEncryptionKeyPair = async function (): Promise<KeyPairPem> {
   const crypto = getCrypto();
   const pair = await crypto.subtle.generateKey(rsaOaepParams, true, ['encrypt', 'decrypt']);

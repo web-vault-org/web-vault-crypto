@@ -8,13 +8,20 @@ import {
 import { encode, decode } from '@/base64';
 import { createDataString } from '@/util';
 
+/**
+ * signs an object
+ * @param data - object to sign
+ * @param privateSigningKey - private key (PEM, Ed25519)
+ * @param exclude - array with names of properties to exclude
+ * @returns Promise with signature as base64-encoded string
+ */
 const sign = async function ({
-  privateSigningKey,
   data,
+  privateSigningKey,
   exclude
 }: {
-  privateSigningKey: string;
   data: Record<string, unknown>;
+  privateSigningKey: string;
   exclude?: string[];
 }): Promise<string> {
   validatePrivateSigningKey(privateSigningKey);
@@ -26,14 +33,22 @@ const sign = async function ({
   return encode(new Uint8Array(signature));
 };
 
+/**
+ * verifies an object
+ * @param data - object to verify
+ * @param publicSigningKey - public key (PEM, Ed25519)
+ * @param signature - signature as string to verify the object against
+ * @param exclude - array with names of properties to exclude
+ * @returns Promise with boolean, stating if object is authentic and integer
+ */
 const verify = async function ({
-  publicSigningKey,
   data,
+  publicSigningKey,
   signature,
   exclude
 }: {
-  publicSigningKey: string;
   data: Record<string, unknown>;
+  publicSigningKey: string;
   signature: string;
   exclude?: string[];
 }): Promise<boolean> {
