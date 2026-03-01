@@ -27,7 +27,7 @@ const wrapPrivateSigningKey = async function ({
  * unwraps/decrypts private key for sign and verify
  * @param wrappedPrivateSigningKey - key to unwrap/decrypt (Uint8Array or base64-encoded string)
  * @param key - key used to encrypt the key (length (in bytes) must be 16, 24 or 32 bytes)
- * @returns Promise with unwrapped key (Uint8Array)
+ * @returns Promise with unwrapped key (string)
  */
 const unwrapPrivateSigningKey = async function ({
   wrappedPrivateSigningKey,
@@ -67,7 +67,7 @@ const wrapPrivateEncryptionKey = async function ({
  * unwraps/decrypts private key for encryption and decryption
  * @param wrappedPrivateEncryptionKey - key to unwrap/decrypt (Uint8Array or base64-encoded string)
  * @param key - key used to encrypt the key (length (in bytes) must be 16, 24 or 32 bytes)
- * @returns Promise with unwrapped key (Uint8Array)
+ * @returns Promise with unwrapped key (string)
  */
 const unwrapPrivateEncryptionKey = async function ({
   wrappedPrivateEncryptionKey,

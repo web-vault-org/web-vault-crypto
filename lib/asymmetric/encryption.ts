@@ -96,7 +96,7 @@ const encrypt = async function ({
  * @param content - ciphertext as string or Uint8Array
  * @param privateKey - private key (PEM)
  * @param keyIndex - index, determining which public key the private key belongs to.
- * example: On encryption three public keys where provided, the private key provided on decryption belong to the second public key, so provide 2 as keyIndex
+ * example: On encryption three public keys where provided, the private key provided on decryption belongs to the second public key, so provide 2 as keyIndex
  * (keyIndex is 1-based)
  * @param asString - boolean, if plaintext should be returned as string
  * @param additionalData - array of strings, with additional Data for integrity and authenticity checks

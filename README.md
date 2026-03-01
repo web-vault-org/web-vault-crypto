@@ -43,6 +43,10 @@ const key = await createKey({ sizeInBytes: 32 });
 // or import all functions
 import webVaultCrypto from 'web-vault-crypto';
 const key = await webVaultCrypto.createKey({ sizeInBytes: 32 });
+
+// or import only symmetric/asymmetric specific
+import { createKey } from 'web-vault-crypto/symmetric';
+import { sign } from 'web-vault-crypto/asymmetric';
 ```
 
 ### Browser
@@ -68,10 +72,10 @@ const key = await webVaultCrypto.createKey({ sizeInBytes: 32 });
 ```
 
 ## API
-Read [API Documentation](./api.md) to see how to use the functions
+Read [API Documentation](./docs/api.md) to see how to use the functions
 
 ## Crypto/Security
-Read [Security Concept](./crypto.md) to see the crypto/security concepts
+Read [Security Concept](./docs/crypto.md) to see the crypto/security concepts
 
 ## Changelog
 Read [Changelog](./changelog.md) to see recent changes
