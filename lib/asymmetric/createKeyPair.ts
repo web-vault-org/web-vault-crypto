@@ -44,4 +44,4 @@ const createEncryptionKeyPair = async function (): Promise<KeyPairPem> {
   };
 };
 
-export { createSigningKeyPair, createEncryptionKeyPair };
+export { createSigningKeyPair, createEncryptionKeyPair, KeyPairPem };
