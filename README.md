@@ -17,12 +17,20 @@ Used crypto-libraries:
 * [native web crypto api](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) for everything else
 
 ## Features
-* key generation
-* password-based key derivation &minus; argon2id
-* password hashing &minus; argon2id / PBKDF2
-* key wrapping and unwrapping &minus; aeskeywrap
-* encryption and decryption &minus; `AEAD` using `AES-256-GCM`
-* signing and verification &minus; using `hmac`
+
+### Symmetric
+* key generation &minus; `CSPRNG`
+* password-based key derivation &minus; `argon2id` / `PBKDF2`
+* password hashing &minus; `argon2id` / `PBKDF2`
+* key wrapping and unwrapping &minus; `aes-key-wrap`
+* encryption and decryption &minus; `AEAD` using `AES-256-GCM` (with `aes-key-wrap`)
+* signing and verification &minus; using `hmac` with `SHA-256`
+
+### Asymmetric
+* key generation &minus; `Ed25519` / `RSA-OAEP`
+* private key wrapping and unwrapping &minus; `AES-256-GCM`
+* encryption and decryption &minus; `AEAD` using `AES-256-GCM` (with `RSA-OAEP`)
+* signing and verification &minus; using `Ed25519` with `SHA-256`
 
 ## Usage
 
