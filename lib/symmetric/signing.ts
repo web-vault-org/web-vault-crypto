@@ -1,12 +1,5 @@
 import { getCrypto } from '@/crypto';
-
-const createDataString = function (data: Record<string, unknown>, exclude?: string[]): string {
-  const filteredData = { ...data };
-  for (const ex of exclude ?? []) {
-    delete filteredData[ex];
-  }
-  return JSON.stringify(filteredData);
-};
+import { createDataString } from '@/util';
 
 const hmac = async function (dataString: string, key: Uint8Array): Promise<string> {
   if (key.length < 8) {
