@@ -56,7 +56,7 @@ describe('encryption', () => {
     const decrypted = await decrypt({
       content: encrypted,
       privateKey: privateKeyPem1,
-      keyIndex: 0,
+      keyIndex: 1,
       asString: true
     });
 
@@ -101,7 +101,7 @@ describe('encryption', () => {
       decrypt({
         content: encrypted,
         privateKey: privateKeyPem2, // wrong key
-        keyIndex: 0,
+        keyIndex: 1,
         asString: true
       })
     ).rejects.toThrow();
@@ -118,7 +118,7 @@ describe('encryption', () => {
     const decrypted = await decrypt({
       content: encrypted,
       privateKey: privateKeyPem1,
-      keyIndex: 0,
+      keyIndex: 1,
       asString: true,
       additionalData: ['context', 'v1']
     });
@@ -128,7 +128,7 @@ describe('encryption', () => {
       decrypt({
         content: encrypted,
         privateKey: privateKeyPem1,
-        keyIndex: 0,
+        keyIndex: 1,
         asString: true,
         additionalData: ['wrong']
       })
