@@ -55,7 +55,7 @@ const unwrapKeyWithPrivateKey = async function (wrappedKey: Uint8Array, privateK
 };
 
 /**
- * encrypts a string or a Uint8Array with one or more public keys (RSA-OAEP)
+ * encrypts a string or a Uint8Array with one or more public keys (RSA-OAEP & AES-GCM)
  * @param content - the content to be encrypted
  * @param publicKeys - array of strings, with public keys (PEM)
  * @param encode - boolean, if plaintext should be base64-encoded
@@ -92,7 +92,7 @@ const encrypt = async function ({
 };
 
 /**
- * decrypts a string or a Uint8Array with a private key (RSA-OAEP)
+ * decrypts a string or a Uint8Array with a private key (RSA-OAEP & AES-GCM)
  * @param content - ciphertext as string or Uint8Array
  * @param privateKey - private key (PEM)
  * @param keyIndex - index, determining which public key the private key belongs to.
