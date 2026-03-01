@@ -115,4 +115,28 @@ describe('signing', () => {
 
     expect(isValid).toBe(false);
   });
+
+  describe('constraints', () => {
+    it('sign fails with invalid privateKey, not pem.', async () => {
+      await expect(sign({ privateSigningKey: 'invalid', data: {} })).rejects.toThrow('Invalid key format. Must be private Ed25519 key in PEM format');
+    });
+
+    it('sign fails with invalid privateKey, public instead of private.', async () => {
+      await expect(sign({ privateSigningKey: publicKeyPem, data: {} })).rejects.toThrow(
+        'Invalid key format. Must be private Ed25519 key in PEM format'
+      );
+    });
+
+    it('verify fails with invalid publicKey, not pem.', async () => {
+      await expect(verify({ publicSigningKey: 'invalid', data: {}, signature: '' })).rejects.toThrow(
+        'Invalid key format. Must be public Ed25519 key in PEM format'
+      );
+    });
+
+    it('verify fails with invalid publicKey, private instead of public.', async () => {
+      await expect(verify({ publicSigningKey: privateKeyPem, data: {}, signature: '' })).rejects.toThrow(
+        'Invalid key format. Must be public Ed25519 key in PEM format'
+      );
+    });
+  });
 });

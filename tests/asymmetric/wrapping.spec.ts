@@ -60,4 +60,21 @@ describe('wrapPrivateSigningKey / unwrapPrivateSigningKey', () => {
     expect(unwrapped1).toBe(privateKeyPem);
     expect(unwrapped2).toBe(privateKeyPem);
   });
+
+  describe('constraints', () => {
+    it('wrapSigningKey fails with invalid privateKey, not pem.', async () => {
+      await expect(wrapPrivateSigningKey({ privateSigningKey: 'invalid', key: new Uint8Array() })).rejects.toThrow(
+        'Invalid key format. Must be private Ed25519 key in PEM format'
+      );
+    });
+
+    it('wrapSigningKey fails with invalid privateKey, public instead of private.', async () => {
+      const newKeyPair = await createSigningKeyPair();
+      const publicKeyPem = newKeyPair.publicKey;
+
+      await expect(wrapPrivateSigningKey({ privateSigningKey: publicKeyPem, key: new Uint8Array() })).rejects.toThrow(
+        'Invalid key format. Must be private Ed25519 key in PEM format'
+      );
+    });
+  });
 });

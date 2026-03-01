@@ -1,7 +1,12 @@
-import { importEd25519PrivateKeyFromPEM, importEd25519PublicKeyFromPEM } from '@/asymmetric/util';
+import { getCrypto } from '@/crypto';
+import {
+  importEd25519PrivateKeyFromPEM,
+  importEd25519PublicKeyFromPEM,
+  validatePrivateSigningKey,
+  validatePublicSigningKey
+} from '@/asymmetric/util';
 import { encode, decode } from '@/base64';
 import { createDataString } from '@/util';
-import { getCrypto } from '@/crypto';
 
 const sign = async function ({
   privateSigningKey,
@@ -12,6 +17,7 @@ const sign = async function ({
   data: Record<string, unknown>;
   exclude?: string[];
 }): Promise<string> {
+  validatePrivateSigningKey(privateSigningKey);
   const crypto = getCrypto();
   const encoder = new TextEncoder();
   const dataString = createDataString(data, exclude);
@@ -31,6 +37,7 @@ const verify = async function ({
   signature: string;
   exclude?: string[];
 }): Promise<boolean> {
+  validatePublicSigningKey(publicSigningKey);
   const crypto = getCrypto();
   const encoder = new TextEncoder();
   const dataString = createDataString(data, exclude);
