@@ -29,7 +29,8 @@ Used crypto-libraries:
 ### Asymmetric
 * key generation &minus; `Ed25519` / `RSA-OAEP`
 * private key wrapping and unwrapping &minus; `AES-256-GCM`
-* encryption and decryption &minus; `AEAD` using `AES-256-GCM` (with `RSA-OAEP`)
+* encryption and decryption &minus; `AEAD` using `AES-256-GCM` (with `RSA-OAEP`) \
+  (Supports multiple recipients)
 * signing and verification &minus; using `Ed25519` with `SHA-256`
 
 ## Usage
