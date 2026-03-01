@@ -48,11 +48,30 @@ const validatePublicSigningKey = function (key: string): void {
   }
 };
 
+const validatePrivateEncryptionKey = function (key: string): void {
+  const regex = /^-----BEGIN PRIVATE KEY-----\n([a-z0-9+/]{64}\n){25}[a-z0-9+/]{20,30}={0,2}\n-----END PRIVATE KEY-----$/isu;
+  if (!regex.test(key)) {
+    throw new Error('Invalid key format. Must be private RSA-OAEP key in PEM format');
+  }
+};
+
+const validatePublicEncryptionKey = function (key: string): void {
+  const regex = /^-----BEGIN PUBLIC KEY-----\n([a-z0-9+/]{64}\n){6}[a-z0-9+/]{5,15}={0,2}\n-----END PUBLIC KEY-----$/isu;
+  if (!regex.test(key)) {
+    throw new Error('Invalid key format. Must be public RSA-OAEP key in PEM format');
+  }
+};
+
+const rsaOaepParams = { name: 'RSA-OAEP', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' };
+
 export {
   arrayBufferToPem,
   pemToArrayBuffer,
   importEd25519PrivateKeyFromPEM,
   importEd25519PublicKeyFromPEM,
   validatePrivateSigningKey,
-  validatePublicSigningKey
+  validatePublicSigningKey,
+  validatePrivateEncryptionKey,
+  validatePublicEncryptionKey,
+  rsaOaepParams
 };
