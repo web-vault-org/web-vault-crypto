@@ -54,6 +54,10 @@
     "encryption",
     "decryption",
     "crypto",
+    "symmetric",
+    "asymmetric",
+    "public",
+    "private",
     "web",
     "vault",
     "random key generation",
@@ -67,7 +71,11 @@
     "pbkdf2",
     "hmac",
     "aeskeywrap",
-    "aes-gcm"
+    "aes-gcm",
+    "ed25519",
+    "rsa-oaep",
+    "rsa",
+    "elliptic-curve"
   ],
   "author": "Johanna Herrmann",
   "license": "MIT"
