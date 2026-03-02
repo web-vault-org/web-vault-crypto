@@ -2,6 +2,7 @@ import { importKey, splitByLengths } from '@/util';
 import { encode as encodeBase64, decode as decodeBase64 } from '@/base64';
 import { getCrypto } from '@/crypto';
 
+const crypto = getCrypto();
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
@@ -23,6 +24,19 @@ const concat = function (...arrays: Uint8Array[]): Uint8Array {
 const encodeAAD = function (additionalData?: string[]): Uint8Array | undefined {
   if (!additionalData || additionalData.length === 0) return undefined;
   return encoder.encode(additionalData.join('\u0000'));
+};
+
+const encryptWithRandomKeyUsingAesGcm = async function (
+  content: string | Uint8Array,
+  keyLength: number,
+  additionalData?: string[]
+): Promise<[CryptoKey, Uint8Array, Uint8Array]> {
+  const plaintext = toUint8Array(content);
+  const aad = encodeAAD(additionalData);
+  const contentKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: keyLength }, true, ['encrypt']);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: aad }, contentKey, plaintext));
+  return [contentKey, iv, ciphertext];
 };
 
 /**
@@ -48,13 +62,7 @@ const encrypt = async function ({
     throw new Error('Invalid key length. Must be 16, 24 or 32');
   }
 
-  const crypto = getCrypto();
-
-  const plaintext = toUint8Array(content);
-  const aad = encodeAAD(additionalData);
-  const contentKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: key.length * 8 }, true, ['encrypt']);
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: aad }, contentKey, plaintext));
+  const [contentKey, iv, ciphertext] = await encryptWithRandomKeyUsingAesGcm(content, key.length * 8, additionalData);
 
   const kek = await importKey(key, 'AES-KW', ['wrapKey'], true);
   const wrappedKey = new Uint8Array(await crypto.subtle.wrapKey('raw', contentKey, kek, { name: 'AES-KW' }));
@@ -86,10 +94,7 @@ const decrypt = async function ({
     throw new Error('Invalid key length. Must be 16, 24 or 32');
   }
 
-  const crypto = getCrypto();
-
   const data = typeof content === 'string' ? decodeBase64(content) : content;
-  const aad = encodeAAD(additionalData);
   const [wrappedKey, iv, ciphertext] = splitByLengths(data, [key.length + 8, 12]);
 
   const kek = await importKey(key, 'AES-KW', ['unwrapKey'], true);
@@ -97,9 +102,10 @@ const decrypt = async function ({
     'decrypt'
   ]);
 
+  const aad = encodeAAD(additionalData);
   const plaintext = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv, additionalData: aad }, contentKey, ciphertext));
 
   return asString ? decoder.decode(plaintext) : plaintext;
 };
 
-export { encrypt, decrypt };
+export { encrypt, decrypt, encryptWithRandomKeyUsingAesGcm, encodeAAD };
