@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { encrypt } from '@/encryption';
+import { encrypt } from '@/symmetric/encryption';
 
 describe('encrypt – official test vector', () => {
   const masterKey = Uint8Array.from([

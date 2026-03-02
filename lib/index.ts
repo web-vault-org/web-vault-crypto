@@ -1,9 +1,77 @@
-import { createKey } from '@/createKey';
-import { derivePasswordKey, hashPassword } from '@/hashing';
-import { wrapKeys, unwrapKeys } from '@/wrapping';
-import { encrypt, decrypt } from '@/encryption';
-import { sign, verify } from '@/signing';
+import {
+  createKey,
+  derivePasswordKey,
+  hashPassword,
+  wrapKeys,
+  unwrapKeys,
+  encrypt as encryptSymmetric,
+  decrypt as decryptSymmetric,
+  sign as signSymmetric,
+  verify as verifySymmetric
+} from '@/symmetric';
+import {
+  createEncryptionKeyPair,
+  createSigningKeyPair,
+  encrypt as encryptAsymmetric,
+  decrypt as decryptAsymmetric,
+  sign as signAsymmetric,
+  verify as verifyAsymmetric,
+  wrapPrivateSigningKey,
+  unwrapPrivateSigningKey,
+  wrapPrivateEncryptionKey,
+  unwrapPrivateEncryptionKey
+} from '@/asymmetric';
 
-export default { createKey, derivePasswordKey, hashPassword, wrapKeys, unwrapKeys, encrypt, decrypt, sign, verify };
+const exp = {
+  createKey,
+  derivePasswordKey,
+  hashPassword,
+  wrapKeys,
+  unwrapKeys,
+  encryptSymmetric,
+  decryptSymmetric,
+  signSymmetric,
+  verifySymmetric,
+  createEncryptionKeyPair,
+  createSigningKeyPair,
+  encryptAsymmetric,
+  decryptAsymmetric,
+  signAsymmetric,
+  verifyAsymmetric,
+  wrapPrivateSigningKey,
+  unwrapPrivateSigningKey,
+  wrapPrivateEncryptionKey,
+  unwrapPrivateEncryptionKey,
+  encrypt: encryptSymmetric,
+  decrypt: decryptSymmetric,
+  sign: signSymmetric,
+  verify: verifySymmetric
+};
 
-export { createKey, derivePasswordKey, hashPassword, wrapKeys, unwrapKeys, encrypt, decrypt, sign, verify };
+export default exp;
+
+export {
+  createKey,
+  derivePasswordKey,
+  hashPassword,
+  wrapKeys,
+  unwrapKeys,
+  encryptSymmetric,
+  decryptSymmetric,
+  signSymmetric,
+  verifySymmetric,
+  createEncryptionKeyPair,
+  createSigningKeyPair,
+  encryptAsymmetric,
+  decryptAsymmetric,
+  signAsymmetric,
+  verifyAsymmetric,
+  wrapPrivateSigningKey,
+  unwrapPrivateSigningKey,
+  wrapPrivateEncryptionKey,
+  unwrapPrivateEncryptionKey,
+  encryptSymmetric as encrypt,
+  decryptSymmetric as decrypt,
+  signSymmetric as sign,
+  verifySymmetric as verify
+};

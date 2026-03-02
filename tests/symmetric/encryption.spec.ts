@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { encrypt, decrypt } from '@/encryption';
+import { encrypt, decrypt } from '@/symmetric/encryption';
 
 const randomBytes = function (length: number): Uint8Array {
   const bytes = new Uint8Array(length);

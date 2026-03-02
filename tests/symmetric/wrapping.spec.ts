@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { wrapKeys, unwrapKeys, wrapKey, unwrapKey } from '@/wrapping';
+import { wrapKeys, unwrapKeys, wrapKey, unwrapKey } from '@/symmetric/wrapping';
 
 function randomBytes(length: number): Uint8Array {
   const arr = new Uint8Array(length);

@@ -1,24 +1,26 @@
 # API
 
-This file explains how to use the library's API.
+This file explains how to use the library's API for symmetric functions.
 
-* [Key Generation](#key-generation)
+## Table of contents
+
+* [Symmetric Key Generation](#symmetric-key-generation)
 * Hashing
   * [Key Derivation](#key-derivation) 
   * [Password Hashing](#password-hashing)
 * Key Wrapping/Unwrapping
-  * [Wrap Key](#wrap-key)
-  * [Wrap Keys](#wrap-keys)
-  * [Unwrap Key](#unwrap-key)
-  * [Unwrap Keys](#unwrap-keys)
+  * [Wrap symmetric Key](#wrap-symmetric-key)
+  * [Wrap symmetric Keys](#wrap-symmetric-keys)
+  * [Unwrap symmetric Key](#unwrap-symmetric-key)
+  * [Unwrap symmetric Keys](#unwrap-symmetric-keys)
 * Encryption/Decryption
-  * [Encryption](#encryption)
-  * [Decryption](#decryption)
+  * [Symmetric Encryption](#symmetric-encryption)
+  * [Symmetric Decryption](#symmetric-decryption)
 * Sign/Verify
-  * [Sign](#sign)
-  * [Verify](#verify)
+  * [Sign symmetric](#sign-symmetric)
+  * [Verify symmetric](#verify-symmetric)
 
-## Key generation
+## Symmetric Key generation
 To create a random key, use the function `createKey`, providing the key length in bytes.
 
 ### Syntax
@@ -115,7 +117,7 @@ A Promise that fulfills with an array containing
 * The given or newly generated salt as `string`
 * The hash as base64-encoded `string`
 
-## Wrap key
+## Wrap symmetric key
 To wrap a key (the secure way to encrypt a key with another key), use the function `wrapKey`, providing the key to wrap,
 the wrapping-key and optionally an encode-toggle. \
 To wrap more than one single key at once, use the function [wrapKeys](#wrap-keys)
@@ -150,7 +152,7 @@ A Promise that fulfills with...
 * If `encoded` is `true`: wrapped key as base64-encoded `string`
 * If `encoded` is `false`: wrapped key as `Uint8Array`
 
-## Wrap keys
+## Wrap symmetric keys
 To wrap keys (the secure way to encrypt a key with another key), use the function `wrapKeys`, providing the keys to wrap,
 the wrapping-key and optionally an encode-toggle. \
 To wrap a single key, use the function [wrapKey](#wrap-key)
@@ -185,7 +187,7 @@ A Promise that fulfills with...
 * If `encoded` is `true`: wrapped keys as array of base64-encoded `string`s
 * If `encoded` is `false`: wrapped keys as array of `Uint8Array`s
 
-## Unwrap key
+## Unwrap symmetric key
 To unwrap a key (the secure way to decrypt a key with another key), use the function `unwrapKey`, providing the key to unwrap
 and the wrapping-key. \
 To unwrap more than one single key at once, use the function [unwrapKeys](#unwrap-keys)
@@ -209,7 +211,7 @@ Length (in bytes) must be 16, 24 or 32.
 ### Return value
 A Promise that fulfills with a `Uint8Array`, providing the unwrapped key.
 
-## Unwrap keys
+## Unwrap symmetric keys
 To unwrap keys (the secure way to decrypt a key with another key), use the function `unwrapKeys`, providing the keys to unwrap
 and the wrapping-key. \
 To unwrap a single key, use the function [unwrapKey](#unwrap-key)
@@ -233,26 +235,29 @@ Length (in bytes) must be 16, 24 or 32.
 ### Return value
 A Promise that fulfills with an array of `Uint8Array`s, providing the unwrapped keys.
 
-## Encryption
+## Symmetric Encryption
 To encrypt a string or a Uint8Array, use the function `encrypt`,
 providing the plaintext, the key, optionally an encode-toggle and optionally additionalData
 
 ### Syntax
 
 ```js
+import { encryptSymmetric } from 'web-vault-crypto';
+
+// or legacy
 import { encrypt } from 'web-vault-crypto';
 
 // string to base64-encoded-string
-const encryptedString = await encrypt({ content: 'top secret!', key: encryptionKey, encode: true });
+const encryptedString = await encryptSymmetric({ content: 'top secret!', key: encryptionKey, encode: true });
 
 // string to Uint8Array
-const encryptedString = await encrypt({ content: 'top secret!', key: encryptionKey });
+const encryptedString = await encryptSymmetric({ content: 'top secret!', key: encryptionKey });
 
 // Uint8Array to base64-encoded-string
-const encrypted = await encrypt({ content: plaintext, key: encryptionKey, encode: true });
+const encrypted = await encryptSymmetric({ content: plaintext, key: encryptionKey, encode: true });
 
 // Uint8Array to Uint8Array, using additionl data for integrety checks
-const encrypted = await encrypt({ content: plaintext, key: encryptionKey, additionalData: ['someId'] });
+const encrypted = await encryptSymmetric({ content: plaintext, key: encryptionKey, additionalData: ['someId'] });
 ```
 
 ### Parameters
@@ -280,26 +285,29 @@ A Promise that fulfills with...
 ### Notice
 The used algorithm also provides authenticity and integrity checks, so you don't need to sign, using hmac.
 
-## Decryption
+## Symmetric Decryption
 To decrypt a string or a Uint8Array, use the function `decrypt`,
 providing the ciphertext, optionally an asString-toggle and optionally additionalData
 
 ### Syntax
 
 ```js
+import { decryptSymmetric } from 'web-vault-crypto';
+
+// or legacy
 import { decrypt } from 'web-vault-crypto';
 
 // string to base64-encoded-string
-const decryptedString = await decrypt({ content: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', key: encryptionKey, asString: true });
+const decryptedString = await decryptSymmetric({ content: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', key: encryptionKey, asString: true });
 
 // string to Uint8Array
-const decryptedString = await decrypt({ content: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', key: encryptionKey });
+const decryptedString = await decryptSymmetric({ content: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', key: encryptionKey });
 
 // Uint8Array to base64-encoded-string
-const decrypted = await decrypt({ content: ciphertext, key: encryptionKey, asString: true });
+const decrypted = await decryptSymmetric({ content: ciphertext, key: encryptionKey, asString: true });
 
 // Uint8Array to Uint8Array, using addiotional data
-const decrypted = await decrypt({ content: ciphertext, key: encryptionKey, additionalData: ['someId'] });
+const decrypted = await decryptSymmetric({ content: ciphertext, key: encryptionKey, additionalData: ['someId'] });
 ```
 
 ### Parameters
@@ -327,22 +335,25 @@ A Promise that fulfills with...
 ### Notice
 The used algorithm also provides authenticity and integrity checks, so you don't need to verify, using hmac.
 
-## Sign
+## Sign symmetric
 To sign an object using hmac, use the function `hmac`,
 providing the object, the hashing key and optionally en exclude-list.
 
 ### Syntax
 
 ```js
+import { signSymmetric } from 'web-vault-crypto';
+
+// or legacy
 import { sign } from 'web-vault-crypto';
 
 // whole object
 const data = { a: 1, b: 2, c: 'someExampleValue' };
-const signature = await sign({ data, key: signingKey });
+const signature = await signSymmetric({ data, key: signingKey });
 
 // with excludes
 const data = { a: 1, b: 2, c: 'someExampleValue' };
-const signature = await sign({ data, key: signingKey, exclude: ['b', 'c'] });
+const signature = await signSymmetric({ data, key: signingKey, exclude: ['b', 'c'] });
 ```
 
 ### Parameters
@@ -359,22 +370,25 @@ An array of `string`s, providing a list of properties to exclude.
 ### Return value
 A Promise that fulfills with a base64-encoded `string`, providing the signature
 
-## Verify
+## Verify symmetric
 To verify an object using hmac, use the function `verify`,
 providing the object, the hashing key, the signature and optionally an exclude-list.
 
 ### Syntax
 
 ```js
+import { verifySymmetric } from 'web-vault-crypto';
+
+// or legacy
 import { verify } from 'web-vault-crypto';
 
 // whole object
 const data = { a: 1, b: 2, c: 'someExampleValue' };
-const valid = await verify({ data, key: signingKey, signature: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=' });
+const valid = await verifySymmetric({ data, key: signingKey, signature: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=' });
 
 // with excludes
 const data = { a: 1, b: 2, c: 'someExampleValue' };
-const valid = await verify({ data, key: signingKey, signature: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', excludes: ['b', 'c'] });
+const valid = await verifySymmetric({ data, key: signingKey, signature: 'ZHVtbXlCYXNlNjRFeGFtcGxlVmFsdWU=', excludes: ['b', 'c'] });
 ```
 
 ### Parameters
