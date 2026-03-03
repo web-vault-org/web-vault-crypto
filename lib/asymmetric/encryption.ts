@@ -100,6 +100,14 @@ const decrypt = async function ({
   asString?: boolean;
   additionalData?: string[];
 }): Promise<Uint8Array | string> {
+  const [contentKey, iv, ciphertext] = await extract(content, privateKey, keyIndex);
+  const aad = encodeAAD(additionalData);
+
+  const plaintext = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv, additionalData: aad }, contentKey, ciphertext));
+  return asString ? decoder.decode(plaintext) : plaintext;
+};
+
+const extract = async function (content: string | Uint8Array, privateKey: string, keyIndex: number): Promise<[CryptoKey, Uint8Array, Uint8Array]> {
   const data = typeof content === 'string' ? decodeBase64(content) : content;
   const length = data.at(0) ?? 0;
 
@@ -110,10 +118,17 @@ const decrypt = async function ({
   const wrappedKey = wrappedKeys.slice(start, start + 256);
   const key = await unwrapKeyWithPrivateKey(wrappedKey, privateKey);
   const contentKey = await importKey(key, 'AES-GCM', usages, true);
-  const aad = encodeAAD(additionalData);
-
-  const plaintext = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv, additionalData: aad }, contentKey, ciphertext));
-  return asString ? decoder.decode(plaintext) : plaintext;
+  return [contentKey, iv, ciphertext];
 };
 
-export { encrypt, decrypt };
+const rewrite = async function (contentKey: CryptoKey, iv: Uint8Array, ciphertext: Uint8Array, publicKeys: string[]): Promise<Uint8Array> {
+  const key = await crypto.subtle.exportKey('raw', contentKey);
+  const wrappedKeys: Uint8Array[] = [];
+  for (const publicKey of publicKeys) {
+    const wrapped = await wrapKeyWithPublicKey(new Uint8Array(key), publicKey);
+    wrappedKeys.push(wrapped);
+  }
+  return concatUint8Arrays([new Uint8Array([publicKeys.length]), ...wrappedKeys, iv, ciphertext]);
+};
+
+export { encrypt, decrypt, extract, rewrite };

@@ -48,6 +48,8 @@ const exp = {
   verify: verifySymmetric
 };
 
+import { rewriteEncryptionHeader } from '@/rewrite';
+
 export default exp;
 
 export {
@@ -73,5 +75,6 @@ export {
   encryptSymmetric as encrypt,
   decryptSymmetric as decrypt,
   signSymmetric as sign,
-  verifySymmetric as verify
+  verifySymmetric as verify,
+  rewriteEncryptionHeader
 };
