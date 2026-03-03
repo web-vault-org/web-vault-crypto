@@ -59,6 +59,10 @@ The decryption process goes as follows:
 * Unwrap wrapped key with private key
 * Use unwrapped key to decrypt content via AES-GCM
 
+### Rewriting of keys
+For the `rewriteEncryptionHeader` function,
+the extracting, unwrapping, wrapping and concatenating steps are re-used, without touching IV or ciphertext.
+
 ## Sign/Verify
 Symmetric Sign/Verify is made, using hmac, using SHA256
 

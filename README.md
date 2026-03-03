@@ -33,6 +33,10 @@ Used crypto-libraries:
   (Supports multiple recipients)
 * signing and verification &minus; using `Ed25519` with `SHA-256`
 
+### Common
+* change encryption keys (e.g. from symmetric to asymmetric) without re-encryption &minus;
+  `aes-key-wrap`, `RSA-OAEP`
+
 ## Usage
 
 ### npm
