@@ -244,7 +244,7 @@ providing the plaintext, the key, optionally an encode-toggle and optionally add
 ```js
 import { encryptSymmetric } from 'web-vault-crypto';
 
-// or legacy
+// or legacy alias
 import { encrypt } from 'web-vault-crypto';
 
 // string to base64-encoded-string
@@ -294,7 +294,7 @@ providing the ciphertext, optionally an asString-toggle and optionally additiona
 ```js
 import { decryptSymmetric } from 'web-vault-crypto';
 
-// or legacy
+// or legacy alias
 import { decrypt } from 'web-vault-crypto';
 
 // string to base64-encoded-string
@@ -344,7 +344,7 @@ providing the object, the hashing key and optionally en exclude-list.
 ```js
 import { signSymmetric } from 'web-vault-crypto';
 
-// or legacy
+// or legacy alias
 import { sign } from 'web-vault-crypto';
 
 // whole object
@@ -379,7 +379,7 @@ providing the object, the hashing key, the signature and optionally an exclude-l
 ```js
 import { verifySymmetric } from 'web-vault-crypto';
 
-// or legacy
+// or legacy alias
 import { verify } from 'web-vault-crypto';
 
 // whole object

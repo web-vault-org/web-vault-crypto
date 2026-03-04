@@ -1,6 +1,15 @@
 # Changelog
 
-## v0.1.1 2026-02-21
+## v0.2.0 2026-03-05
+
+### Features
+* Implements asymmetric crypto functions
+  * key generation (Ed25519, RSA-OAEP)
+  * private key wrapping and unwrapping
+  * encryption and decryption (RSA-OAEP)
+    (Supports multiple recipients)
+  * signing and verification (Ed25519, SHA-256)
+* Implements function to replace key, without re-encryption
 
 ### !!BREAKING CHANGES!!
 (see fixes)
