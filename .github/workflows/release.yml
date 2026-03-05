@@ -1,31 +1,27 @@
-name: Publish Package
+name: QA and Release
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - 'main'
+    tags-ignore:
+      - '**'
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      TZ: Europe/Berlin
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Ensure tag points to main
-        run: |
-          git fetch origin main
-          TAG_COMMIT=$(git rev-parse $GITHUB_REF)
-          MAIN_COMMIT=$(git rev-parse origin/main)
-          if [ "$TAG_COMMIT" != "$MAIN_COMMIT" ]; then
-            echo "Tag is not on main branch, skipping release."
-            exit 1
-          fi
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js with required version for OIDC
         uses: actions/setup-node@v4
@@ -47,7 +43,30 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: determine next version
+        id: get_next_version
+        uses: thenativeweb/get-next-version@2.7.1
+        with:
+          prefix: 'v'
+
+      - name: fail if no next release version
+        if: ${{ steps.get_next_version.outputs.hasNextVersion != 'true' }}
+        run: |
+          echo "There is no next release version. hasNextVersion is false"
+          exit 1
+
+      - name: Check if version-release is set up correctly
+        uses: johanna-herrmann/node-check-version@v2
+        with:
+          next_version: ${{ steps.get_next_version.outputs.version }}
+
       - name: Publish
         #provenance flag sometimes required, due to a bug?
         #https://philna.sh/blog/2026/01/28/trusted-publishing-npm/
         run: npm publish --provenance
+
+      - name: Tag release commit
+        run: |
+          NEXT_VERSION=${{ steps.get_next_version.outputs.version }}
+          git tag $NEXT_VERSION
+          git push origin $NEXT_VERSION

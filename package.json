@@ -1,6 +1,6 @@
 {
   "name": "web-vault-crypto",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Crypto-Library for e2e encrypted web vaults, using native web crypto api, written in typescript, easy to use.",
   "private": false,
   "type": "module",
@@ -54,6 +54,10 @@
     "encryption",
     "decryption",
     "crypto",
+    "symmetric",
+    "asymmetric",
+    "public",
+    "private",
     "web",
     "vault",
     "random key generation",
@@ -67,7 +71,11 @@
     "pbkdf2",
     "hmac",
     "aeskeywrap",
-    "aes-gcm"
+    "aes-gcm",
+    "ed25519",
+    "rsa-oaep",
+    "rsa",
+    "elliptic-curve"
   ],
   "author": "Johanna Herrmann",
   "license": "MIT"

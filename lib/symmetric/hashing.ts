@@ -1,5 +1,5 @@
-import { getArgon2Hash } from '@/argon2';
-import { createKey } from '@/createKey';
+import { getArgon2Hash } from '@/symmetric/argon2';
+import { createKey } from '@/symmetric/createKey';
 import { encode } from '@/base64';
 import { getCrypto } from '@/crypto';
 import { importKey } from '@/util';

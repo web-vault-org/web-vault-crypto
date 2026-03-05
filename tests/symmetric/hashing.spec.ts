@@ -1,7 +1,7 @@
-import { derivePasswordKey, hashPassword } from '@/hashing';
+import { derivePasswordKey, hashPassword } from '@/symmetric/hashing';
 import { encode } from '@/base64';
 
-jest.mock('@/createKey', () => {
+jest.mock('@/symmetric/createKey', () => {
   return {
     async createKey({ sizeInBytes }: { sizeInBytes: number }) {
       return new Uint8Array(sizeInBytes);

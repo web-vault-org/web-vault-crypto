@@ -17,12 +17,25 @@ Used crypto-libraries:
 * [native web crypto api](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) for everything else
 
 ## Features
-* key generation
-* password-based key derivation &minus; argon2id
-* password hashing &minus; argon2id / PBKDF2
-* key wrapping and unwrapping &minus; aeskeywrap
-* encryption and decryption &minus; `AEAD` using `AES-256-GCM`
-* signing and verification &minus; using `hmac`
+
+### Symmetric
+* key generation &minus; `CSPRNG`
+* password-based key derivation &minus; `argon2id` / `PBKDF2`
+* password hashing &minus; `argon2id` / `PBKDF2`
+* key wrapping and unwrapping &minus; `aes-key-wrap`
+* encryption and decryption &minus; `AEAD` using `AES-256-GCM` (with `aes-key-wrap`)
+* signing and verification &minus; using `hmac` with `SHA-256`
+
+### Asymmetric
+* key generation &minus; `Ed25519` / `RSA-OAEP`
+* private key wrapping and unwrapping &minus; `AES-256-GCM`
+* encryption and decryption &minus; `AEAD` using `AES-256-GCM` (with `RSA-OAEP`) \
+  (Supports multiple recipients)
+* signing and verification &minus; using `Ed25519` with `SHA-256`
+
+### Common
+* change encryption keys (e.g. from symmetric to asymmetric) without re-encryption &minus;
+  `aes-key-wrap`, `RSA-OAEP`
 
 ## Usage
 
@@ -43,6 +56,10 @@ const key = await createKey({ sizeInBytes: 32 });
 // or import all functions
 import webVaultCrypto from 'web-vault-crypto';
 const key = await webVaultCrypto.createKey({ sizeInBytes: 32 });
+
+// or import only symmetric/asymmetric specific
+import { createKey } from 'web-vault-crypto/symmetric';
+import { sign } from 'web-vault-crypto/asymmetric';
 ```
 
 ### Browser
@@ -68,17 +85,13 @@ const key = await webVaultCrypto.createKey({ sizeInBytes: 32 });
 ```
 
 ## API
-Read [API Documentation](./api.md) to see how to use the functions
+Read [API Documentation](./docs/api.md) to see how to use the functions
 
 ## Crypto/Security
-Read [Security Concept](./crypto.md) to see the crypto/security concepts
+Read [Security Concept](./docs/crypto.md) to see the crypto/security concepts
 
 ## Changelog
 Read [Changelog](./changelog.md) to see recent changes
-
-## Future
-Future Plans:
-* Add asymmetric crypto functions (public key / private key) (March &minus; June)
 
 ## License
 This project is licensed under the [MIT License](./LICENSE.txt)

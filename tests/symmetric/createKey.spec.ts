@@ -1,4 +1,4 @@
-import { createKey } from '@/createKey';
+import { createKey } from '@/symmetric/createKey';
 
 describe('createKey', () => {
   it('creates 32 byte key.', async () => {

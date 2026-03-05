@@ -30,4 +30,12 @@ const splitByLengths = function (array: Uint8Array, lengths: number[]): Uint8Arr
   return result;
 };
 
-export { importKey, splitByLengths };
+const createDataString = function (data: Record<string, unknown>, exclude?: string[]): string {
+  const filteredData = { ...data };
+  for (const ex of exclude ?? []) {
+    delete filteredData[ex];
+  }
+  return JSON.stringify(filteredData);
+};
+
+export { importKey, splitByLengths, createDataString };
